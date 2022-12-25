@@ -11,5 +11,10 @@ SPVec4 spHeightGet(SPVec4 previousHeight, //if spReplacesPreviousHeight returns 
 
 
     SPVec4 result = {SP_METERS_TO_PRERENDER(spMax(noiseLoc.x, noiseLoc.y)), riverDistance, 0.0, 0.0};
+
+    if(riverDistance < 100) {
+        result = previousHeight;
+    }
+
     return result;
 }

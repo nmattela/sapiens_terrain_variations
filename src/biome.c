@@ -13,6 +13,6 @@ void spBiomeGetTagsForPoint(SPBiomeThreadState* threadState,
                             double rainfallSummer,
                             double rainfallWinter)
 {
-    *tagCountOut = 0;
-    *tagsOut = 0;
+    //*tagCountOut = 0;
+    //*tagsOut = 0;
 }
