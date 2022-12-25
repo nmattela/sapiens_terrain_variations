@@ -6,7 +6,8 @@ MOD_ID := sapiens_terrain_variations
 init:
 	${CMAKE_BINARY} -DMOD_ID=${MOD_ID} -DMOD_NAME="Terrain Variations" -DDESCRIPTION="Improves terrain variations" -DDEVELOPER="nmattela" -DDEVELOPER_URL="https://github.com/nmattela/sapiens_terrain_variations" -DPREVIEW_FILE="preview.png" -DMOD_MAJOR_VERSION=0 -DMOD_MINOR_VERSION=1 -DMOD_PATCH_VERSION=0 . -B build
 	cmake --build build/
-	ln -s ${BUILD_DIRECTORY}/${MOD_ID} ${MOD_DIRECTORY}/${MOD_ID}
+	rm ${MOD_DIRECTORY}/${MOD_ID}
+	ln -s ${BUILD_DIRECTORY}/${MOD_ID}/ ${MOD_DIRECTORY}/${MOD_ID}
 	ln -s ${PWD}/models/ ${BUILD_DIRECTORY}/${MOD_ID}/models
 	ln -s ${PWD}/scripts/ ${BUILD_DIRECTORY}/${MOD_ID}/scripts
 

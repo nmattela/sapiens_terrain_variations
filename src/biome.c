@@ -14,5 +14,6 @@ void spBiomeGetTagsForPoint(SPBiomeThreadState* threadState,
                             double rainfallWinter)
 {
     //*tagCountOut = 0;
-    //*tagsOut = 0;
+    *tagCountOut = threadState->getBiomeTag(threadState, "rainforest");
+    *tagsOut = 0;
 }
