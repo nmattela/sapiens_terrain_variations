@@ -1,0 +1,3 @@
+/home/nmattela/Documents/sapiens_terrain_variations/build/CMakeFiles/sapiens_terrain_variations.dir
+/home/nmattela/Documents/sapiens_terrain_variations/build/CMakeFiles/edit_cache.dir
+/home/nmattela/Documents/sapiens_terrain_variations/build/CMakeFiles/rebuild_cache.dir

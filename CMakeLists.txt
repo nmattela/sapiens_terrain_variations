@@ -20,7 +20,7 @@ set(CMAKE_C_STANDARD 99)
 add_library(${MOD_ID} SHARED src/height.c src/biome.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/splugins/include)
-find_library(SP_LIBRARY SPCommon PATHS ${CMAKE_CURRENT_SOURCE_DIR}/splugins/lib REQUIRED)
+find_library(SP_LIBRARY SPCommon PATHS ${CMAKE_CURRENT_SOURCE_DIR}/splugins/lib REQUIRED NO_CMAKE_FIND_ROOT_PATH)
 mark_as_advanced(SP_LIBRARY)
 target_link_libraries(${MOD_ID} ${SP_LIBRARY})
 
