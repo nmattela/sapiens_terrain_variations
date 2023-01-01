@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "sprand.h": "c",
+        "splog.h": "c",
+        "spheight.h": "c",
+        "spbiome.h": "c",
+        "spcommon.h": "c",
+        "spmath.h": "c",
+        "stdint.h": "c",
+        "spnoise.h": "c"
+    }
+}
