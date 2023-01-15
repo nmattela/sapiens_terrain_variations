@@ -4,7 +4,7 @@ local mod = {
 
 function mod:onload(localPlayer)
 
-    -- localPlayer:setMaxDistanceFromClosestSapien(mj:mToP(math.huge))
+    --localPlayer:setMaxDistanceFromClosestSapien(mj:mToP(math.huge))
 
 end
 

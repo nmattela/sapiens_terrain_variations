@@ -20,5 +20,5 @@ publish:
 	- rm -rf ${MOD_DIRECTORY}/${MOD_ID}
 	- cp -r ${PWD}/models/ ${BUILD_DIRECTORY}/${MOD_ID}/models
 	- cp -r ${PWD}/scripts/ ${BUILD_DIRECTORY}/${MOD_ID}/scripts
+	cp ${PWD}/workshop.mjl ${BUILD_DIRECTORY}/${MOD_ID}/workshop.mjl
 	- cp -r ${BUILD_DIRECTORY}/${MOD_ID} ${MOD_DIRECTORY}/${MOD_ID}
-	- cp ${PWD}/workshop.mjl ${BUILD_DIRECTORY}/${MOD_ID}/workshop.mjl

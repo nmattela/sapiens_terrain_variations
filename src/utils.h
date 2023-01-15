@@ -2,10 +2,13 @@
 #define utils
 
 #include <math.h>
+#include "map.h"
 
 #define PI 3.14159265358979323846
 
 double rangeMap(double oldMin, double oldMax, double newMin, double newMax, double oldValue);
+
+double rangeMapNoInvert(double oldMin, double oldMax, double newMin, double newMax, double oldValue);
 
 double cutoffPointByPercentage(double from, double percentage);
 

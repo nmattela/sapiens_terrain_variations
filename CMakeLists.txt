@@ -17,7 +17,7 @@ project(${MOD_ID} C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_library(${MOD_ID} SHARED src/FastNoiseLite.h src/height.c src/biome.c src/debug.h src/debug.c src/heightBiomes.c src/heightBiomes.h src/utils.c src/utils.h)
+add_library(${MOD_ID} SHARED src/FastNoiseLite.h src/FastNoiseLite.c src/map.h src/map.c src/height.c src/biome.c src/debug.h src/debug.c src/heightBiomes.c src/heightBiomes.h src/heightBiomesFlora.h src/utils.c src/utils.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/splugins/include)
 find_library(SP_LIBRARY SPCommon PATHS ${CMAKE_CURRENT_SOURCE_DIR}/splugins/lib REQUIRED NO_CMAKE_FIND_ROOT_PATH)

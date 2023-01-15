@@ -8,12 +8,6 @@ double rangeMap(double oldMin, double oldMax, double newMin, double newMax, doub
         oldMax = temp;
     }
 
-    if(newMin > newMax) {
-        double temp = newMin;
-        newMin = newMax;
-        newMax = temp;
-    }
-
     if(oldValue <= oldMin) {
         return newMin;
     }
@@ -25,6 +19,15 @@ double rangeMap(double oldMin, double oldMax, double newMin, double newMax, doub
     double newRange = newMax - newMin;
     double newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin;
     return newValue;
+}
+
+double rangeMapNoInvert(double oldMin, double oldMax, double newMin, double newMax, double oldValue) {
+    if(newMin > newMax) {
+        double temp = newMin;
+        newMin = newMax;
+        newMax = temp;
+    }
+    return rangeMap(oldMin, oldMax, newMin, newMax, oldValue);
 }
 
 /**
@@ -85,5 +88,5 @@ double slopeSmoothing(double m, double x, double b) {
  * 
 */
 double smootheTowardsOcean(double modHeight, double vanillaHeight) {
-    return rangeMap(0, -50, modHeight, vanillaHeight, vanillaHeight);
+    return rangeMapNoInvert(0, -50, modHeight, vanillaHeight, vanillaHeight);
 }

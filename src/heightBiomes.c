@@ -1,12 +1,9 @@
 #include "heightBiomes.h"
-#include "utils.h"
-#include "debug.h"
 #include "SPLog.h"
+#include "utils.h"
 #include "FastNoiseLite.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-#define BLEND_DISTANCE 0.00003
 
 /**
  * 
@@ -23,6 +20,13 @@
 
 HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
 
+    // // DEBUG
+    // HeightBiome* debug = malloc(sizeof(HeightBiome)*2);
+    // debug[0] = (HeightBiome){ 1, 0 };
+    // debug[1] = (HeightBiome){ mesa, 1 };
+    // return debug;
+    // // DEBUG
+
     // We do not use the vanilla perlin noise. Instead we use a verenoi noise provided to us by the FastNoiseLite library to generate our biomes
     fnl_state biomeNoiseGenerator = fnlCreateState();
     biomeNoiseGenerator.noise_type = FNL_NOISE_CELLULAR;
@@ -30,7 +34,6 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
     biomeNoiseGenerator.octaves = 6;
     biomeNoiseGenerator.cellular_return_type = FNL_CELLULAR_RETURN_VALUE_CELLVALUE;
     biomeNoiseGenerator.cellular_distance_func = FNL_CELLULAR_DISTANCE_HYBRID;
-    float biomeNoise = fabsf(fnlGetNoise3D(&biomeNoiseGenerator, noiseLoc.x, noiseLoc.y, noiseLoc.z));
 
     // We instantiate another verenoi noise, but this one will be used to calculate the biome blend (it returns a value close to 0 if it is close to a biome edge, and close to 1 if it is in the center of a biome)
     fnl_state blendingNoiseGenerator = fnlCreateState();
@@ -62,11 +65,31 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
     for(int i = 0; i < biomeRowSize; i++) {
         BiomeOdds biome = biomeRow[i];
         threshold -= biome.odds;
-        BiomeOdds oddsThreshold = { biome.biome, threshold, false };
+        BiomeOdds oddsThreshold = { biome.biome, threshold, biome.blendDistance, false };
         oddsThresholds[i] = oddsThreshold;
     }
 
-    // Now, get all biomes in each 27 directions in 3D space BLEND_DISTANCE units away from the sampled point and check if the biome at those points differ from the sampled point
+
+    // To calculate the blend, we will check the biome type at each 27 directions in 3D space from our sampled point.
+    // But first we need to know how far ahead we need to look ahead in the directions.
+    // The smaller the distance we need to check, the sharper the biome blending will be
+    // Mesas need sharp biome blending, but swamps need smoother biome blending e.g.
+    float biomeNoise = fabsf(fnlGetNoise3D(&biomeNoiseGenerator, noiseLoc.x, noiseLoc.y, noiseLoc.z));
+
+    BiomeOdds centralBiome = oddsThresholds[0];
+    for(int i = 1; i < biomeRowSize; i++) {
+        BiomeOdds oddsThreshold = oddsThresholds[i];
+        if(biomeNoise >= oddsThreshold.odds && biomeNoise < centralBiome.odds) {
+            centralBiome = oddsThreshold;
+        }
+    }
+
+    double blendDistance = centralBiome.blendDistance;
+
+
+
+
+    // Now, get all biomes in each 27 directions in 3D space blendDistance units away from the sampled point and check if the biome at those points differ from the sampled point
     HeightBiome biomeBlends[27];
     int heightBiomeIndex = 0;
 
@@ -74,16 +97,10 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
         for(int y = -1; y <= 1; y++) {
             for(int z = -1; z <= 1; z++) {
 
-                // Take an offset, which can be -BLEND_DISTANCE, +0, or +BLEND_DISTANCE from the sampled point
-                double xOffset = noiseLoc.x + (x * BLEND_DISTANCE);
-                double yOffset = noiseLoc.y + (y * BLEND_DISTANCE);
-                double zOffset = noiseLoc.z + (z * BLEND_DISTANCE);
-
-                // Generate noise for both what biome will be on the point as well as what the blending noise for that point is.
-                float biomeNoise = fabsf(fnlGetNoise3D(&biomeNoiseGenerator, xOffset, yOffset, zOffset));
-                float blendingNoise = fabsf(fnlGetNoise3D(&blendingNoiseGenerator, xOffset, yOffset, zOffset));
-                
-                int index = heightBiomeIndex++;
+                // Take an offset, which can be -blendDistance, +0, or +blendDistance from the sampled point
+                double xOffset = noiseLoc.x + (x * blendDistance);
+                double yOffset = noiseLoc.y + (y * blendDistance);
+                double zOffset = noiseLoc.z + (z * blendDistance);
 
                 // Fix floating point errors
                 if(xOffset < 0.2 || xOffset > 2.2 || yOffset < 0.2 || yOffset > 2.2 || zOffset < 0.2 || zOffset > 2.2) {
@@ -91,6 +108,10 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
                     yOffset = noiseLoc.y;
                     zOffset = noiseLoc.z;
                 }
+
+                // Generate noise for both what biome will be on the point as well as what the blending noise for that point is.
+                float biomeNoise = fabsf(fnlGetNoise3D(&biomeNoiseGenerator, xOffset, yOffset, zOffset));
+                float blendingNoise = fabsf(fnlGetNoise3D(&blendingNoiseGenerator, xOffset, yOffset, zOffset));
 
                 // Find what biome fits this sampled point based on the odds in the oddsThresholds array
                 // Initial value will be first value in the array !!! THIS MEANS THAT NO ARRAY MAY BE LEFT EMPTY !!! (duh)
@@ -104,10 +125,13 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
                 }
 
                 HeightBiome heightBiome = { biomeOfChoice.biome, blendingNoise };
+                
+                int index = heightBiomeIndex++;
                 biomeBlends[index] = heightBiome;
             }
         }
     }
+
 
     //Array of weights for each biome, indexed by biome height value (fjords = 1, swamp = 4, etc. Check header file)
     double biomeWeights[HEIGHT_BIOME_COUNT];
@@ -152,13 +176,13 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
     biomes[0] = length;
 
     // Fill the biomes array with biome + blend
-    int biomeIndex = 1;
+    int biomeIndex = 2;
     for(int i = 0; i < HEIGHT_BIOME_COUNT; i++) {
         double biomeWeight = biomeWeights[i];
         int biomeWeightCount = biomeWeightCounts[i];
 
         if(biomeWeightCount != 0) {
-            int index = biomeIndex++;
+            int index = i == centralBiome.biome ? 1 : biomeIndex++;
             // The weight of the biome / the total of all weights gives us a percentage of how influencial this biome is to the sampled point
             // If there is only one biome, the weight is 1 by definition
             double weight = biomeWeight / totalBiomeWeights;
@@ -166,7 +190,6 @@ HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
             biomes[index] = biome;
         }
     }
-
 
     return biomes;
 

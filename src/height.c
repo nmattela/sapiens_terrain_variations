@@ -1,5 +1,4 @@
 #include "SPHeight.h"
-#include "debug.h"
 #include "heightBiomes.h"
 #include "utils.h"
 #include "SPLog.h"
@@ -12,7 +11,7 @@ bool spReplacesPreviousHeight()
 	return false;
 }
 
-double generateFjords(SPVec4 previousHeight,
+double generateFjords(SPVec4 previousHeight, //a7852
                     SPNoise* noise1,
                     SPNoise* noise2,
                     SPVec3 pointNormal,
@@ -34,8 +33,10 @@ double generateFjords(SPVec4 previousHeight,
         // height = cosineSmoothing(0, 0.001, riverHeight, height, riverDistance);
 
         double riverHeight = spMax(previous, -200.0);//b9691
-        double m = height / 0.001;
-        height = slopeSmoothing(m, riverDistance, riverHeight);
+        //double m = height / 0.001;
+        double newMax = previous < 0 ? smootheTowardsOcean(height, previous) : height;
+        height = rangeMapNoInvert(0, 0.0009, riverHeight, newMax, riverDistance);
+        //height = slopeSmoothing(m, riverDistance, riverHeight);
     } else if(previous < 0) {
         height = smootheTowardsOcean(height, previous);
     }
@@ -61,25 +62,29 @@ double generateMesa(
     height = rangeMap(0, 1, previous, previous+1000, height);
     //height *= 1000;
 
-    if(riverDistance < 0.00005 && previous >= -10) {
+    // Height for river water
+    if(riverDistance < 0.00005 && previous >= -20) {
         height = spMax(previous, -20.0);
-    } else if(riverDistance < 0.00015 && previous >= -10) {
+    // Height for river slope
+    } else if(riverDistance < 0.00015 && previous >= -20) {
         //height = 1;
 
         double multiplier = spNoiseGet(noise1, spVec3Mul(noiseLoc, 100), 1);
         multiplier *= 10;
         height = spMax(multiplier, 1);
-    } else if(riverDistance < 0.0003 && previous >= -10) {
+    // Height for river bank
+    } else if(riverDistance < 0.00035 && previous >= -20) {
         //We need to map the X range = [0.001, 0.002], onto Y range = [defaultHeight, height]
 
         double oldMin = 0.00015;
-        double oldMax = 0.0003;
+        double oldMax = 0.00035;
         double newMin = spMax(previous, 1);
-        double newMax = height;
+        double newMax = previous < 0 ? smootheTowardsOcean(height, previous) : height;
 
-        double newValue = rangeMap(oldMin, oldMax, newMin, newMax, riverDistance);
+        double newValue = rangeMapNoInvert(oldMin, oldMax, newMin, newMax, riverDistance);
 
         height = newValue;
+    // Height for when ocean in sight
     } else if(previous < 0) {
         height = smootheTowardsOcean(height, previous);
     }
@@ -221,7 +226,7 @@ SPVec4 spHeightGet(SPVec4 previousHeight,
     uint16_t heightBiomeSize = heightBiomesArray[0].biome;
 
     // //DEBUG
-    // double height = generateSwamp(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
+    // double height = generateHillsides(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
     // SPVec4 result = previousHeight;
     // result.x = SP_METERS_TO_PRERENDER(height);
     // return result;
