@@ -12,19 +12,26 @@ function mod:onload(material)
             key = key,
             color = color,
             roughness = 1.1,
-            metal = 1.1,
+            metal = 0.1,
             colorB = vec3(0,0,0),
             roughnessB = 1.1 * 0.9,
-            metalB = 1.1
+            metalB = 0.1
         })
     end
 
-    createDebug("debug_fjords", vec3(0, 0, 255))
-    createDebug("debug_mesa", vec3(0, 255, 0))
-    createDebug("debug_plains", vec3(0, 255, 255))
-    createDebug("debug_swamp", vec3(255, 0, 0))
-    createDebug("debug_desert_oasis", vec3(255, 0, 255))
-    createDebug("debug_hillsides", vec3(255, 255, 0))
+    -- for r = 0, 255, 1 do
+    --     for g = 0, 255, 1 do
+    --         for b = 0, 255, 1 do
+    --             createDebug("debug_"..r.."_"..g.."_"..b, vec3(r/255, g/255, b/255))
+    --         end
+    --     end
+    -- end
+
+    for i = 0, 255, 1 do
+        createDebug("debug_"..i.."_0_0", vec3(i/255, 0, 0))
+        createDebug("debug_0_"..i.."_0", vec3(0, i/255, 0))
+        createDebug("debug_0_0_"..i    , vec3(0, 0, i/255))
+    end
 end
 
 return mod

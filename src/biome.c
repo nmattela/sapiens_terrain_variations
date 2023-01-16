@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "SPBiome.h"
 #include "heightBiomes.h"
 #include "heightBiomesFlora.h"
@@ -6,120 +7,103 @@
 #include "FastNoiseLite.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-// void spBiomeGetTagsForPoint(SPBiomeThreadState* threadState,
-//                             uint16_t* tagsOut,
-//                             int* tagCountOut,
-//                             SPVec3 pointNormal,
-//                             SPVec3 noiseLoc,
-//                             double altitude,
-//                             double steepness,
-//                             double riverDistance,
-//                             double temperatureSummer,
-//                             double temperatureWinter,
-//                             double rainfallSummer,
-//                             double rainfallWinter)
-// {
-//     //*tagCountOut = 0;
-//     *tagCountOut = threadState->getBiomeTag(threadState, "rainforest");
-//     *tagsOut = 0;
-// }
+void spBiomeInit(SPBiomeThreadState* threadState) {
 
-// static uint32_t terrainBaseType_debug_fjords;
-// static uint32_t terrainVariation_debug_fjords;
-// static uint32_t terrainBaseType_debug_mesa;
-// static uint32_t terrainVariation_debug_mesa;
-// static uint32_t terrainBaseType_debug_plains;
-// static uint32_t terrainVariation_debug_plains;
-// static uint32_t terrainBaseType_debug_swamp;
-// static uint32_t terrainVariation_debug_swamp;
-// static uint32_t terrainBaseType_debug_desert_oasis;
-// static uint32_t terrainVariation_debug_desert_oasis;
-// static uint32_t terrainBaseType_debug_hillsides;
-// static uint32_t terrainVariation_debug_hillsides;
+    // for(int r = 0; r < 256; r++) {
+    //     for(int g = 0; g < 256; g++) {
+    //         for(int b = 0; b < 0; b++) {
+    //             char* str;
+    //             asprintf(&str, "debug_%d_%d_%d", r, g, b);
+    //             threadState->getTerrainBaseTypeIndex(threadState, str);
+    //             threadState->getTerrainVariation(threadState, str);
+    //         }
+    //     }
+    // }
 
-// void spBiomeInit(SPBiomeThreadState* threadState) {
-//     terrainBaseType_debug_fjords = threadState->getTerrainBaseTypeIndex(threadState, "debug_fjords");
-//     terrainVariation_debug_fjords = threadState->getTerrainVariation(threadState, "debug_fjords");
-//     terrainBaseType_debug_mesa = threadState->getTerrainBaseTypeIndex(threadState, "debug_mesa");
-//     terrainVariation_debug_mesa = threadState->getTerrainVariation(threadState, "debug_mesa");
-//     terrainBaseType_debug_plains = threadState->getTerrainBaseTypeIndex(threadState, "debug_plains");
-//     terrainVariation_debug_plains = threadState->getTerrainVariation(threadState, "debug_plains");
-//     terrainBaseType_debug_swamp = threadState->getTerrainBaseTypeIndex(threadState, "debug_swamp");
-//     terrainVariation_debug_swamp = threadState->getTerrainVariation(threadState, "debug_swamp");
-//     terrainBaseType_debug_desert_oasis = threadState->getTerrainBaseTypeIndex(threadState, "debug_desert_oasis");
-//     terrainVariation_debug_desert_oasis = threadState->getTerrainVariation(threadState, "debug_desert_oasis");
-//     terrainBaseType_debug_hillsides = threadState->getTerrainBaseTypeIndex(threadState, "debug_hillsides");
-//     terrainVariation_debug_hillsides = threadState->getTerrainVariation(threadState, "debug_hillsides");
-// }
+    for(int i = 0; i < 256; i++) {
+        char* strRed;
+        asprintf(&strRed, "debug_%d_0_0", i);
+        threadState->getTerrainBaseTypeIndex(threadState, strRed);
+        threadState->getTerrainVariation(threadState, strRed);
 
-// SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(SPBiomeThreadState* threadState,
-//                                                   SPSurfaceTypeResult incomingType,
-//                                                   uint16_t* tags,
-//                                                   int tagCount,
-//                                                   uint32_t* modifications,
-//                                                   int modificationCount,
-//                                                   uint32_t fillGameObjectTypeIndex,
-//                                                   int16_t digFillOffset,
-//                                                   uint32_t* variations,
-//                                                   SPVec3 pointNormal, 
-//                                                   SPVec3 noiseLoc, 
-//                                                   double baseAltitude,
-//                                                   double steepness,
-//                                                   double riverDistance,
-//                                                   int seasonIndex) {
+        char* strGreen;
+        asprintf(&strGreen, "debug_0_%d_0", i);
+        threadState->getTerrainBaseTypeIndex(threadState, strGreen);
+        threadState->getTerrainVariation(threadState, strGreen);
+
+        char* strBlue;
+        asprintf(&strBlue, "debug_0_0_%d", i);
+        threadState->getTerrainBaseTypeIndex(threadState, strBlue);
+        threadState->getTerrainVariation(threadState, strBlue);
+
+        free(strRed);
+        free(strGreen);
+        free(strBlue);
+    }
+}
+
+double min = 100000;
+double max = -100000;
+
+// SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
+//     SPBiomeThreadState* threadState,
+//     SPSurfaceTypeResult incomingType,
+//     uint16_t* tags,
+//     int tagCount,
+//     uint32_t* modifications,
+//     int modificationCount,
+//     uint32_t fillGameObjectTypeIndex,
+//     // (-Infinity, +Infinity)
+//     int16_t digFillOffset,
+//     uint32_t* variations,
+//     SPVec3 pointNormal, 
+//     SPVec3 noiseLoc, 
+//     // (-0.001, 0.001)
+//     double baseAltitude,
+//     // (0, 2(+))
+//     double steepness,
+//     // (0, +Infinity)
+//     double riverDistance,
+//     int seasonIndex
+// ) {
 
 //     SPSurfaceTypeResult result = incomingType;
 
-//     HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+//     //Steepness is the difference between a sampled value 4 meters to the north and a sampled value 4 meters to the east. Using triangulation, we can get the angle
+//     double angle = isnan(steepness) ? 0 : atan(steepness / sqrt(32));
+//     double steepnessRange = rangeMap(0, 1.5707963268, 0, 1, angle);
 
-//     uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+//     long steepnessColor = roundl(rangeMap(0, 1, 0, 255, steepnessRange));
+//     char* steepnessString;
+//     asprintf(&steepnessString, "debug_%ld_0_0", steepnessColor);
 
-//     //if(heightBiomesSize == 1) {
-//         HeightBiome heightBiome = heightBiomesArray[1];
+//     //baseAltitude varies, and there is no "absolute minimum" or "absolute maximum", but running some tests it seems to fall between -0.001 and 0.001.
+//     //Negative values are below sea level.
+//     //1/255th is about 17 meters, putting the "highest" altitude to 4335 (if you see 0.001 as the maximum)
+//     //1 meter in altitude is therefore 0.00000023 units in baseAltitude
+//     long baseAltitudeColor = roundl(rangeMap(0, 0.001, 0, 255, baseAltitude));
+//     char* baseAltitudeString;
+//     asprintf(&baseAltitudeString, "debug_0_%ld_0", baseAltitudeColor);
 
-//         switch(heightBiome.biome) {
-//             case fjords: {
-//                 result.surfaceBaseType = terrainBaseType_debug_fjords;
-//                 break;
-//             }
-//             case mesa: {
-//                 result.surfaceBaseType = terrainBaseType_debug_mesa;
-//                 break;
-//             }
-//             case plains: {
-//                 result.surfaceBaseType = terrainBaseType_debug_plains;
-//                 break;
-//             }
-//             case swamp: {
-//                 result.surfaceBaseType = terrainBaseType_debug_swamp;
-//                 break;
-//             }
-//             case desertOasis: {
-//                 result.surfaceBaseType = terrainBaseType_debug_desert_oasis;
-//                 break;
-//             }
-//             case hillsides: {
-//                 result.surfaceBaseType = terrainBaseType_debug_hillsides;
-//                 break;
-//             }
-//             default: {
-//                 break;
-//             }
-//         }
+//     //riverDistance of 1 is roughly 7650 hexagons removed from the nearest river
+//     long riverDistanceColor = roundl(rangeMap(0, 1, 0, 255, riverDistance));
+//     char* riverDistanceString;
+//     asprintf(&riverDistanceString, "debug_0_0_%ld", riverDistanceColor);
 
-//         SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
-//         result.materialIndex = defaults.materialIndex;
-//         result.decalTypeIndex = defaults.decalGroupIndex;
-//         result.pathDifficultyIndex = defaults.pathDifficultyIndex;
-//         free(heightBiomesArray);
-//         return result;
+//     result.surfaceBaseType = threadState->getTerrainBaseTypeIndex(threadState, riverDistanceString);
+    
+//     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
+//     result.materialIndex = defaults.materialIndex;
+//     result.decalTypeIndex = defaults.decalGroupIndex;
+//     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
 
-//     //} else {
-//     //    free(heightBiomesArray);
-//     //    return result;
-//     //}
+//     free(steepnessString);
+//     free(baseAltitudeString);
+//     free(riverDistanceString);
 
+//     return result;
 // }
 
 typedef struct SurfaceTypeInfo {
@@ -240,13 +224,6 @@ void getSurfaceTypeInfo(SPBiomeThreadState* threadState, uint16_t* biomeTags, in
 static const double SEA_LEVEL = SP_METERS_TO_PRERENDER(-0.1);
 static const double DEEP_SEA_LEVEL = SP_METERS_TO_PRERENDER(-1.1);
 
-
-double minSteepness = 1000000;
-double maxSteepenss = -10000000;
-
-int redRockCount = 0;
-int greenRockCount = 0;
-
 SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
     SPBiomeThreadState* threadState,
     SPSurfaceTypeResult incomingType,
@@ -268,285 +245,544 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
     double riverDistance,
     int seasonIndex
 ) {
-        uint32_t terrainModification_snowRemoved						= threadState->getTerrainModification(threadState, "snowRemoved");
-        uint32_t terrainModification_vegetationRemoved				    = threadState->getTerrainModification(threadState, "vegetationRemoved");
-        uint32_t terrainModification_preventGrassAndSnow				= threadState->getTerrainModification(threadState, "preventGrassAndSnow");
 
-        uint32_t terrainVariation_snow									= threadState->getTerrainVariation(threadState, "snow");
-	    uint32_t terrainVariation_grassSnow								= threadState->getTerrainVariation(threadState, "grassSnow");
+	uint32_t terrainModification_snowRemoved						= threadState->getTerrainModification(threadState, "snowRemoved");
+	uint32_t terrainModification_vegetationRemoved				    = threadState->getTerrainModification(threadState, "vegetationRemoved");
+	uint32_t terrainModification_preventGrassAndSnow				= threadState->getTerrainModification(threadState, "preventGrassAndSnow");
 
-        uint32_t terrainVariation_shallowWater							= threadState->getTerrainVariation(threadState, "shallowWater");
-	    uint32_t terrainVariation_deepWater								= threadState->getTerrainVariation(threadState, "deepWater");
+	uint32_t terrainVariation_snow									= threadState->getTerrainVariation(threadState, "snow");
+	uint32_t terrainVariation_grassSnow								= threadState->getTerrainVariation(threadState, "grassSnow");
 
+	uint32_t terrainVariation_shallowWater							= threadState->getTerrainVariation(threadState, "shallowWater");
+	uint32_t terrainVariation_deepWater								= threadState->getTerrainVariation(threadState, "deepWater");
 
-        // 
+	
 
+	//Steepness is the difference between a sampled value 4 meters to the north and a sampled value 4 meters to the east. Using triangulation, we can get the angle
+    double angle = isnan(steepness) ? 0 : atan(steepness / sqrt(32));
+    steepness = rangeMap(0, 1.5707963268, 0, 1, angle);
 
+	double noiseValueVanilla = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 45999.0 ), 2);
 
-        // fnl_state noiseValueGenerator = fnlCreateState();
-        // noiseValueGenerator.noise_type = FNL_NOISE_PERLIN;
-        // noiseValueGenerator.frequency = 45999.0;
-        // noiseValueGenerator.octaves = 2;
+	SPSurfaceTypeResult result = incomingType;
 
-        // fnl_state noiseValueSmallGenerator = fnlCreateState();
-        // noiseValueSmallGenerator.noise_type = FNL_NOISE_PERLIN;
-        // noiseValueSmallGenerator.frequency = 834567.0;
-        // noiseValueSmallGenerator.octaves = 2;
+	SurfaceTypeInfo surfaceTypeInfo;
+	memset(&surfaceTypeInfo, 0, sizeof(surfaceTypeInfo));
+	getSurfaceTypeInfo(threadState, tags, tagCount, seasonIndex, &surfaceTypeInfo, steepness, noiseValueVanilla);
 
-        // fnl_state noiseValueMedGenerator = fnlCreateState();
-        // noiseValueMedGenerator.noise_type = FNL_NOISE_PERLIN;
-        // noiseValueMedGenerator.frequency = 92273.0;
-        // noiseValueMedGenerator.octaves = 2;
+	bool snowRemoved = false;
+	bool shouldAddVegetation = true;
+	int soilQuality = 1;
 
-        // fnl_state noiseValueLargeGenerator = fnlCreateState();
-        // noiseValueLargeGenerator.noise_type = FNL_NOISE_PERLIN;
-        // noiseValueLargeGenerator.frequency = 8073.0;
-        // noiseValueLargeGenerator.octaves = 2;
+	for(int i = 0; i < modificationCount; i++)
+	{
+		if(modifications[i] == terrainModification_snowRemoved)
+		{
+			snowRemoved = true;
+		}
+		else if(modifications[i] == terrainModification_vegetationRemoved)
+		{
+			shouldAddVegetation = false;
+		}
+	}
 
-	    double noiseValue      = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 45999.0 ), 2);
-        double noiseValueSmall = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 834567.0), 2);
-        double noiseValueMed   = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 92273.0 ), 2);
-        double noiseValueLarge = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 8073.0  ), 2);
-
-
-        SPSurfaceTypeResult result = incomingType;
-
-        SurfaceTypeInfo surfaceTypeInfo;
-        memset(&surfaceTypeInfo, 0, sizeof(surfaceTypeInfo));
-        getSurfaceTypeInfo(threadState, tags, tagCount, seasonIndex, &surfaceTypeInfo, steepness, noiseValue);
-
-        noiseValue = fabs(noiseValue);
-        noiseValueSmall = fabs(noiseValueSmall);
-        noiseValueMed = fabs(noiseValueMed);
-        noiseValueLarge = fabs(noiseValueLarge);
-
-        bool snowRemoved = false;
-        bool shouldAddVegetation = true;
-        int soilQuality = 1;
-
-        for(int i = 0; i < modificationCount; i++)
-        {
-            if(modifications[i] == terrainModification_snowRemoved)
-            {
-                snowRemoved = true;
-            }
-            else if(modifications[i] == terrainModification_vegetationRemoved)
-            {
-                shouldAddVegetation = false;
-            }
-        }
-
-        bool underWater = (baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL);
-        if(underWater)
-        {
-            shouldAddVegetation = false;
-            snowRemoved = true;
-        }
+	bool underWater = (baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL);
+	if(underWater)
+	{
+		shouldAddVegetation = false;
+		snowRemoved = true;
+	}
 
 
-        uint32_t fillSurfaceBaseType = 0;
-        if(fillGameObjectTypeIndex != 0)
-        {
-            fillSurfaceBaseType = threadState->getSurfaceBaseTypeForFillObjectType(threadState, fillGameObjectTypeIndex);
-        }
+	uint32_t fillSurfaceBaseType = 0;
+	if(fillGameObjectTypeIndex != 0)
+	{
+		fillSurfaceBaseType = threadState->getSurfaceBaseTypeForFillObjectType(threadState, fillGameObjectTypeIndex);
+	}
 
 
-        bool hasSnow = false;
-        if(!snowRemoved && surfaceTypeInfo.snowDepth > 0)
-        {
-            if(surfaceTypeInfo.snowDepth == 3)
-            {
-                hasSnow = true;
-            }
-            else if((noiseValue > -0.1))
-            {
-                if(surfaceTypeInfo.snowDepth == 2 || (noiseValue > 0.3))
-                {
-                    hasSnow = true;
-                }
-            }
-        }
+	bool hasSnow = false;
+	if(!snowRemoved && surfaceTypeInfo.snowDepth > 0)
+	{
+		if(surfaceTypeInfo.snowDepth == 3)
+		{
+			hasSnow = true;
+		}
+		else if((noiseValueVanilla> -0.1))
+		{
+			if(surfaceTypeInfo.snowDepth == 2 || (noiseValueVanilla> 0.3))
+			{
+				hasSnow = true;
+			}
+		}
+	}
 
+	HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
 
+	uint16_t heightBiomesSize = heightBiomesArray[0].biome;
 
-        HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+	HeightBiome biome = heightBiomesArray[1];
 
-        uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+	BiomeTerrainBaseDistribution distribution = defaultTerrainDistribution;
+	switch(biome.biome) {
+		case fjords: distribution = fjordsTerrainDistribution;break;
+		case mesa: distribution = mesaTerrainDistribution;break;
+		case plains: distribution = plainsTerrainDistribution;break;
+		case swamp: distribution = swampTerrainDistribution;break;
+		case desertOasis: distribution = desertOasisTerrainDistribution;break;
+		case hillsides: distribution = hillsidesTerrainDistribution;break;
+		default: {
+			return incomingType;
+		}
+	}
 
-        HeightBiome biome = heightBiomesArray[1];
+	double calculatedOdds[distribution.terrainBaseTypeOddsCount];
+	double totalOdds = 0;
+	for(int i = 0; i < distribution.terrainBaseTypeOddsCount; i++) {
+		TerrainBaseTypeOdds* terrainBaseTypeOdds = distribution.terrainBaseTypesOdds[i];
+		double odds = terrainBaseTypeOdds->odds;
 
-        BiomeTerrainBaseDistribution distribution = defaultTerrainDistribution;
-        switch(biome.biome) {
-            case fjords: distribution = fjordsTerrainDistribution;break;
-            case mesa: distribution = mesaTerrainDistribution;break;
-            case plains: distribution = plainsTerrainDistribution;break;
-            case swamp: distribution = swampTerrainDistribution;break;
-            case desertOasis: distribution = desertOasisTerrainDistribution;break;
-            case hillsides: distribution = hillsidesTerrainDistribution;break;
-            default: {
-                return incomingType;
-            }
-        }
+		if(baseAltitude > terrainBaseTypeOdds->minBaseAltitude && baseAltitude < terrainBaseTypeOdds->maxBaseAltitude) {
+			double baseAltitudeModifier = rangeMap(terrainBaseTypeOdds->minBaseAltitude, terrainBaseTypeOdds->maxBaseAltitude, terrainBaseTypeOdds->baseAltitudeFrom, terrainBaseTypeOdds->baseAltitudeTo, baseAltitude);
+			odds *= baseAltitudeModifier;
+		}
+		if(steepness > terrainBaseTypeOdds->minSteepness && steepness < terrainBaseTypeOdds->maxSteepness) {
+			double steepnessModifier = rangeMap(terrainBaseTypeOdds->minSteepness, terrainBaseTypeOdds->maxSteepness, terrainBaseTypeOdds->steepnessFrom, terrainBaseTypeOdds->steepnessTo, steepness);
+			odds *= steepnessModifier;
+		}
+		if(riverDistance > terrainBaseTypeOdds->minRiverDistance && riverDistance < terrainBaseTypeOdds->maxRiverDistance) {
+			double riverDistanceModifier = rangeMap(terrainBaseTypeOdds->minRiverDistance, terrainBaseTypeOdds->maxRiverDistance, terrainBaseTypeOdds->riverDistanceFrom, terrainBaseTypeOdds->riverDistanceTo, riverDistance);
+			odds *= riverDistanceModifier;
+		}
+		if(digFillOffset > terrainBaseTypeOdds->minDigFillOffset && digFillOffset < terrainBaseTypeOdds->maxDigFillOffset) {
+			double digFillOffsetModifier = rangeMap(terrainBaseTypeOdds->minDigFillOffset, terrainBaseTypeOdds->maxDigFillOffset, terrainBaseTypeOdds->digFillOffsetFrom, terrainBaseTypeOdds->digFillOffsetTo, digFillOffset);
+			odds *= digFillOffsetModifier;
+		}
 
-        //spLog("%lf%lf%lfFor pointNormal = (%lf, %lf, %lf), noiseLoc = (%lf, %lf, %lf), scaledNoiseLoc = (%lf, %lf, %lf), noiseValue = %lf", pointNormal.x, pointNormal.y, pointNormal.z, pointNormal.x, pointNormal.y, pointNormal.z, noiseLoc.x, noiseLoc.y, noiseLoc.z, scaledNoiseLoc.x, scaledNoiseLoc.y, scaledNoiseLoc.z, noiseValue);
+		calculatedOdds[i] = odds;
+		totalOdds += odds;
+	}
 
-        TerrainBaseTypeOdds* chosenTerrainBaseTypeOdds = distribution.terrainBaseTypesOdds[distribution.terrainBaseTypeOddsCount-1];
-        for(int i = 0; i < distribution.terrainBaseTypeOddsCount; i++) {
-            TerrainBaseTypeOdds* terrainBaseTypeOdds = distribution.terrainBaseTypesOdds[i];
+	fnl_state noiseValueGenerator = fnlCreateState();
+	noiseValueGenerator.noise_type = FNL_NOISE_CELLULAR;
+	noiseValueGenerator.frequency = 45999.0;
+	noiseValueGenerator.octaves = 6;
+	noiseValueGenerator.cellular_return_type = FNL_CELLULAR_RETURN_VALUE_CELLVALUE;
+	noiseValueGenerator.cellular_distance_func = FNL_CELLULAR_DISTANCE_HYBRID;
 
-            double odds = terrainBaseTypeOdds->odds;
-            double oddsSmall = terrainBaseTypeOdds->oddsSmall;
-            double oddsMed = terrainBaseTypeOdds->oddsMed;
-            double oddsLarge = terrainBaseTypeOdds->oddsLarge;
+	double accumulatedOdds = 0;
+	TerrainBaseTypeOdds* chosenTerrainBaseTypeOdds = distribution.terrainBaseTypesOdds[distribution.terrainBaseTypeOddsCount-1];
+	for(int i = 0; i < distribution.terrainBaseTypeOddsCount; i++) {
+		double odds = calculatedOdds[i] / totalOdds;
+		TerrainBaseTypeOdds* terrainBaseTypeOdds = distribution.terrainBaseTypesOdds[i];
 
-            if(baseAltitude > terrainBaseTypeOdds->minBaseAltitude && baseAltitude < terrainBaseTypeOdds->maxBaseAltitude) {
-                double baseAltitudeModifier = rangeMap(terrainBaseTypeOdds->minBaseAltitude, terrainBaseTypeOdds->maxBaseAltitude, terrainBaseTypeOdds->baseAltitudeFrom, terrainBaseTypeOdds->baseAltitudeTo, baseAltitude);
-                odds *= baseAltitudeModifier;
-                oddsSmall *= baseAltitudeModifier;
-                oddsMed *= baseAltitudeModifier;
-                oddsLarge *= baseAltitudeModifier;
-            }
-            if(steepness > terrainBaseTypeOdds->minSteepness && steepness < terrainBaseTypeOdds->maxSteepness) {
-                double steepnessModifier = rangeMap(terrainBaseTypeOdds->minSteepness, terrainBaseTypeOdds->maxSteepness, terrainBaseTypeOdds->steepnessFrom, terrainBaseTypeOdds->steepnessTo, steepness);
-                odds *= steepnessModifier;
-                oddsSmall *= steepnessModifier;
-                oddsMed *= steepnessModifier;
-                oddsLarge *= steepnessModifier;
-            }
-            if(riverDistance > terrainBaseTypeOdds->minRiverDistance && riverDistance < terrainBaseTypeOdds->maxRiverDistance) {
-                double riverDistanceModifier = rangeMap(terrainBaseTypeOdds->minRiverDistance, terrainBaseTypeOdds->maxRiverDistance, terrainBaseTypeOdds->riverDistanceFrom, terrainBaseTypeOdds->riverDistanceTo, riverDistance);
-                odds *= riverDistanceModifier;
-                oddsSmall *= riverDistanceModifier;
-                oddsMed *= riverDistanceModifier;
-                oddsLarge *= riverDistanceModifier;
-            }
-            if(digFillOffset > terrainBaseTypeOdds->minDigFillOffset && digFillOffset < terrainBaseTypeOdds->maxDigFillOffset) {
-                double digFillOffsetModifier = rangeMap(terrainBaseTypeOdds->minDigFillOffset, terrainBaseTypeOdds->maxDigFillOffset, terrainBaseTypeOdds->digFillOffsetFrom, terrainBaseTypeOdds->digFillOffsetTo, digFillOffset);
-                odds *= digFillOffsetModifier;
-                oddsSmall *= digFillOffsetModifier;
-                oddsMed *= digFillOffsetModifier;
-                oddsLarge *= digFillOffsetModifier;
-            }
+		switch(terrainBaseTypeOdds->size) {
+			case XS: noiseValueGenerator.frequency = 834567.0;break;
+			case S:  noiseValueGenerator.frequency = 92273.0;break;
+			case M:  noiseValueGenerator.frequency = 45999.0;break;
+			case L:  noiseValueGenerator.frequency = 8073.0;break;
+			case XL: noiseValueGenerator.frequency = 5036.0;break;
+			default: noiseValueGenerator.frequency = 45999.0;break;
+		}
+		double noiseValue = (double)fabsf(fnlGetNoise3D(&noiseValueGenerator, noiseLoc.x, noiseLoc.y, noiseLoc.z));
 
-            // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt" || terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt")
-            // spLog("For %s:\n noiseValue      = %lf <? odds      = %lf: %s,\n noiseValueSmall = %lf <? oddsSmall = %lf: %s,\n noiseValueMed   = %lf <? oddsMed   = %lf: %s,\n noiseValueLarge = %lf <? oddsLarge = %lf: %s\n", terrainBaseTypeOdds->terrainBaseTypeIndex, noiseValue, odds, noiseValue < odds ? "true" : "false", noiseValueSmall, oddsSmall, noiseValueSmall < oddsSmall ? "true" : "false", noiseValueMed, oddsMed, noiseValueMed < oddsMed ? "true" : "false", noiseValueLarge, oddsLarge, noiseValueLarge < oddsLarge ? "true" : "false");
-            if(noiseValue < odds && noiseValueSmall < oddsSmall && noiseValueMed < oddsMed && noiseValueLarge < oddsLarge) {
-                // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt" || terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt") {
-                //     spLog("%s found", terrainBaseTypeOdds->terrainBaseTypeIndex);
-                // }
-                // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "redRock") {
-                //     spLog("redRockCount = %d, greenRockCount = %d", ++redRockCount, greenRockCount);
-                // }
-                // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "greenRock") {
-                //     spLog("redRockCount = %d, greenRockCount = %d", redRockCount, ++greenRockCount);
-                // }
-                chosenTerrainBaseTypeOdds = terrainBaseTypeOdds;
-                break;
-            } else {
-                // spLog("false for %s", terrainBaseTypeOdds->terrainBaseTypeIndex);
-            }
-        }
+		if(noiseValue > accumulatedOdds && noiseValue <= odds + accumulatedOdds) {
+			chosenTerrainBaseTypeOdds = terrainBaseTypeOdds;
+			break;
+		} else {
+			accumulatedOdds += odds;
+		}
+	}
 
-        uint32_t grassVariation = 0;
-        for(int i = 0; i < chosenTerrainBaseTypeOdds->variationCount; i++) {
-            char* variationIndex = chosenTerrainBaseTypeOdds->variations[i];
-            uint32_t variation = threadState->getTerrainVariation(threadState, variationIndex);
+	uint32_t grassVariation = 0;
+	for(int i = 0; i < chosenTerrainBaseTypeOdds->variationCount; i++) {
+		char* variationIndex = chosenTerrainBaseTypeOdds->variations[i];
+		uint32_t variation = threadState->getTerrainVariation(threadState, variationIndex);
 
-            bool isGrassVariation = false;
-            if(shouldAddVegetation && grassVariation == 0) {
-                for(int j = 0; j < GRASS_VARIATIONS_COUNT; j++) {
-                    if(grassVariations[j] == variationIndex) {
-                        isGrassVariation = true;
-                        break;
-                    }
-                }
-            }
+		bool isGrassVariation = false;
+		if(shouldAddVegetation && grassVariation == 0) {
+			for(int j = 0; j < GRASS_VARIATIONS_COUNT; j++) {
+				if(grassVariations[j] == variationIndex) {
+					isGrassVariation = true;
+					break;
+				}
+			}
+		}
 
-            bool isSnowVariation = false;
-            if(!snowRemoved && hasSnow && (variationIndex == "snow" || variationIndex == "grassSnow")) {
-                isSnowVariation = true;
-            }
+		bool isSnowVariation = false;
+		if(!snowRemoved && hasSnow && (variationIndex == "snow" || variationIndex == "grassSnow")) {
+			isSnowVariation = true;
+		}
 
-            if(isSnowVariation) {
-                variations[result.variationCount++] = variation;
-            }
+		if(isSnowVariation) {
+			variations[result.variationCount++] = variation;
+		}
 
-            if(shouldAddVegetation && isGrassVariation) {
-                variations[result.variationCount++] = variation;
-                grassVariation = variation;
-            }
-        }
+		if(shouldAddVegetation && isGrassVariation) {
+			variations[result.variationCount++] = variation;
+			grassVariation = variation;
+		}
+	}
+	
+	result.surfaceBaseType = threadState->getTerrainBaseTypeIndex(threadState, chosenTerrainBaseTypeOdds->terrainBaseTypeIndex);
+	result.materialIndex = 0;
 
-        result.surfaceBaseType = threadState->getTerrainBaseTypeIndex(threadState, chosenTerrainBaseTypeOdds->terrainBaseTypeIndex);
-        result.materialIndex = 0;
+	if(fillSurfaceBaseType != 0) {
+		result.surfaceBaseType = fillSurfaceBaseType;
+	}
 
-        if(fillSurfaceBaseType != 0) {
-            result.surfaceBaseType = fillSurfaceBaseType;
-        }
+	if(grassVariation != 0) {
+		SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation);
+		if(variationDefaults.materialIndex != 0) {
+			result.materialIndex = variationDefaults.materialIndex;
+			result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
 
-        if(grassVariation != 0) {
-            SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation);
-            if(variationDefaults.materialIndex != 0) {
-                result.materialIndex = variationDefaults.materialIndex;
-			    result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+			result.decalTypeIndex = variationDefaults.decalGroupIndex;
+		}
+	}
 
-                result.decalTypeIndex = variationDefaults.decalGroupIndex;
-            }
-        }
+	if(hasSnow) {
+		SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation != 0 ? terrainVariation_grassSnow : terrainVariation_snow);
+		if(variationDefaults.materialIndex != 0) {
+			result.materialIndex = variationDefaults.materialIndex;
+			result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
 
-        if(hasSnow) {
-            SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation != 0 ? terrainVariation_grassSnow : terrainVariation_snow);
-		    if(variationDefaults.materialIndex != 0) {
-                result.materialIndex = variationDefaults.materialIndex;
-			    result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+			if(grassVariation != 0) {
+				result.decalTypeIndex = variationDefaults.decalGroupIndex;
+			} else {
+				result.decalTypeIndex = 0;
+			}
+		}
+	}
+	
+	if(result.materialIndex == 0) {
+		SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
+		result.materialIndex = defaults.materialIndex;
+		result.decalTypeIndex = defaults.decalGroupIndex;
+		result.pathDifficultyIndex = defaults.pathDifficultyIndex;
+	}
 
-                if(grassVariation != 0) {
-                    result.decalTypeIndex = variationDefaults.decalGroupIndex;
-                } else {
-                    result.decalTypeIndex = 0;
-                }
-            }
-        }
-        
-        if(result.materialIndex == 0) {
-            SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
-            result.materialIndex = defaults.materialIndex;
-            result.decalTypeIndex = defaults.decalGroupIndex;
-            result.pathDifficultyIndex = defaults.pathDifficultyIndex;
-        }
+	if(baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL)
+	{
+		if(baseAltitude < DEEP_SEA_LEVEL)
+		{
+			SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_deepWater);
+			result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+			variations[result.variationCount++] = terrainVariation_deepWater;
+		}
+		else
+		{
+			SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_shallowWater);
+			result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+			variations[result.variationCount++] = terrainVariation_shallowWater;
+		}
+	}
 
-        if(baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL)
-        {
-            if(baseAltitude < DEEP_SEA_LEVEL)
-            {
-                SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_deepWater);
-                result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
-                variations[result.variationCount++] = terrainVariation_deepWater;
-            }
-            else
-            {
-                SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_shallowWater);
-                result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
-                variations[result.variationCount++] = terrainVariation_shallowWater;
-            }
-        }
+	free(heightBiomesArray);
 
-        // if(steepness < 1) {
-        //     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, threadState->getTerrainBaseTypeIndex(threadState, "greenRock"));
-        //     result.materialIndex = defaults.materialIndex;
-        //     result.decalTypeIndex = defaults.decalGroupIndex;
-        //     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
-        // } else {
-        //     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, threadState->getTerrainBaseTypeIndex(threadState, "redRock"));
-        //     result.materialIndex = defaults.materialIndex;
-        //     result.decalTypeIndex = defaults.decalGroupIndex;
-        //     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
-        // }
-
-        free(heightBiomesArray);
-
-        return result;
+	return result;
 }
+
+// SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
+//     SPBiomeThreadState* threadState,
+//     SPSurfaceTypeResult incomingType,
+//     uint16_t* tags,
+//     int tagCount,
+//     uint32_t* modifications,
+//     int modificationCount,
+//     uint32_t fillGameObjectTypeIndex,
+//     // (-Infinity, +Infinity)
+//     int16_t digFillOffset,
+//     uint32_t* variations,
+//     SPVec3 pointNormal, 
+//     SPVec3 noiseLoc, 
+//     // (-0.001, 0.001)
+//     double baseAltitude,
+//     // (0, 2(+))
+//     double steepness,
+//     // (0, +Infinity)
+//     double riverDistance,
+//     int seasonIndex
+// ) {
+//         uint32_t terrainModification_snowRemoved						= threadState->getTerrainModification(threadState, "snowRemoved");
+//         uint32_t terrainModification_vegetationRemoved				    = threadState->getTerrainModification(threadState, "vegetationRemoved");
+//         uint32_t terrainModification_preventGrassAndSnow				= threadState->getTerrainModification(threadState, "preventGrassAndSnow");
+
+//         uint32_t terrainVariation_snow									= threadState->getTerrainVariation(threadState, "snow");
+// 	    uint32_t terrainVariation_grassSnow								= threadState->getTerrainVariation(threadState, "grassSnow");
+
+//         uint32_t terrainVariation_shallowWater							= threadState->getTerrainVariation(threadState, "shallowWater");
+// 	    uint32_t terrainVariation_deepWater								= threadState->getTerrainVariation(threadState, "deepWater");
+
+
+//         // 
+
+
+
+//         // fnl_state noiseValueGenerator = fnlCreateState();
+//         // noiseValueGenerator.noise_type = FNL_NOISE_PERLIN;
+//         // noiseValueGenerator.frequency = 45999.0;
+//         // noiseValueGenerator.octaves = 2;
+
+//         // fnl_state noiseValueSmallGenerator = fnlCreateState();
+//         // noiseValueSmallGenerator.noise_type = FNL_NOISE_PERLIN;
+//         // noiseValueSmallGenerator.frequency = 834567.0;
+//         // noiseValueSmallGenerator.octaves = 2;
+
+//         // fnl_state noiseValueMedGenerator = fnlCreateState();
+//         // noiseValueMedGenerator.noise_type = FNL_NOISE_PERLIN;
+//         // noiseValueMedGenerator.frequency = 92273.0;
+//         // noiseValueMedGenerator.octaves = 2;
+
+//         // fnl_state noiseValueLargeGenerator = fnlCreateState();
+//         // noiseValueLargeGenerator.noise_type = FNL_NOISE_PERLIN;
+//         // noiseValueLargeGenerator.frequency = 8073.0;
+//         // noiseValueLargeGenerator.octaves = 2;
+
+// 	    double noiseValue      = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 45999.0 ), 2);
+//         double noiseValueSmall = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 834567.0), 2);
+//         double noiseValueMed   = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 92273.0 ), 2);
+//         double noiseValueLarge = spNoiseGet(threadState->spNoise1, spVec3Mul(noiseLoc, 8073.0  ), 2);
+
+
+//         SPSurfaceTypeResult result = incomingType;
+
+//         SurfaceTypeInfo surfaceTypeInfo;
+//         memset(&surfaceTypeInfo, 0, sizeof(surfaceTypeInfo));
+//         getSurfaceTypeInfo(threadState, tags, tagCount, seasonIndex, &surfaceTypeInfo, steepness, noiseValue);
+
+//         noiseValue = fabs(noiseValue);
+//         noiseValueSmall = fabs(noiseValueSmall);
+//         noiseValueMed = fabs(noiseValueMed);
+//         noiseValueLarge = fabs(noiseValueLarge);
+
+//         bool snowRemoved = false;
+//         bool shouldAddVegetation = true;
+//         int soilQuality = 1;
+
+//         for(int i = 0; i < modificationCount; i++)
+//         {
+//             if(modifications[i] == terrainModification_snowRemoved)
+//             {
+//                 snowRemoved = true;
+//             }
+//             else if(modifications[i] == terrainModification_vegetationRemoved)
+//             {
+//                 shouldAddVegetation = false;
+//             }
+//         }
+
+//         bool underWater = (baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL);
+//         if(underWater)
+//         {
+//             shouldAddVegetation = false;
+//             snowRemoved = true;
+//         }
+
+
+//         uint32_t fillSurfaceBaseType = 0;
+//         if(fillGameObjectTypeIndex != 0)
+//         {
+//             fillSurfaceBaseType = threadState->getSurfaceBaseTypeForFillObjectType(threadState, fillGameObjectTypeIndex);
+//         }
+
+
+//         bool hasSnow = false;
+//         if(!snowRemoved && surfaceTypeInfo.snowDepth > 0)
+//         {
+//             if(surfaceTypeInfo.snowDepth == 3)
+//             {
+//                 hasSnow = true;
+//             }
+//             else if((noiseValue > -0.1))
+//             {
+//                 if(surfaceTypeInfo.snowDepth == 2 || (noiseValue > 0.3))
+//                 {
+//                     hasSnow = true;
+//                 }
+//             }
+//         }
+
+
+
+//         HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+
+//         uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+
+//         HeightBiome biome = heightBiomesArray[1];
+
+//         BiomeTerrainBaseDistribution distribution = defaultTerrainDistribution;
+//         switch(biome.biome) {
+//             case fjords: distribution = fjordsTerrainDistribution;break;
+//             case mesa: distribution = mesaTerrainDistribution;break;
+//             case plains: distribution = plainsTerrainDistribution;break;
+//             case swamp: distribution = swampTerrainDistribution;break;
+//             case desertOasis: distribution = desertOasisTerrainDistribution;break;
+//             case hillsides: distribution = hillsidesTerrainDistribution;break;
+//             default: {
+//                 return incomingType;
+//             }
+//         }
+
+//         //spLog("%lf%lf%lfFor pointNormal = (%lf, %lf, %lf), noiseLoc = (%lf, %lf, %lf), scaledNoiseLoc = (%lf, %lf, %lf), noiseValue = %lf", pointNormal.x, pointNormal.y, pointNormal.z, pointNormal.x, pointNormal.y, pointNormal.z, noiseLoc.x, noiseLoc.y, noiseLoc.z, scaledNoiseLoc.x, scaledNoiseLoc.y, scaledNoiseLoc.z, noiseValue);
+
+//         TerrainBaseTypeOdds* chosenTerrainBaseTypeOdds = distribution.terrainBaseTypesOdds[distribution.terrainBaseTypeOddsCount-1];
+//         for(int i = 0; i < distribution.terrainBaseTypeOddsCount; i++) {
+//             TerrainBaseTypeOdds* terrainBaseTypeOdds = distribution.terrainBaseTypesOdds[i];
+
+//             double odds = terrainBaseTypeOdds->odds;
+//             double oddsSmall = terrainBaseTypeOdds->oddsSmall;
+//             double oddsMed = terrainBaseTypeOdds->oddsMed;
+//             double oddsLarge = terrainBaseTypeOdds->oddsLarge;
+
+//             if(baseAltitude > terrainBaseTypeOdds->minBaseAltitude && baseAltitude < terrainBaseTypeOdds->maxBaseAltitude) {
+//                 double baseAltitudeModifier = rangeMap(terrainBaseTypeOdds->minBaseAltitude, terrainBaseTypeOdds->maxBaseAltitude, terrainBaseTypeOdds->baseAltitudeFrom, terrainBaseTypeOdds->baseAltitudeTo, baseAltitude);
+//                 odds *= baseAltitudeModifier;
+//                 oddsSmall *= baseAltitudeModifier;
+//                 oddsMed *= baseAltitudeModifier;
+//                 oddsLarge *= baseAltitudeModifier;
+//             }
+//             if(steepness > terrainBaseTypeOdds->minSteepness && steepness < terrainBaseTypeOdds->maxSteepness) {
+//                 double steepnessModifier = rangeMap(terrainBaseTypeOdds->minSteepness, terrainBaseTypeOdds->maxSteepness, terrainBaseTypeOdds->steepnessFrom, terrainBaseTypeOdds->steepnessTo, steepness);
+//                 odds *= steepnessModifier;
+//                 oddsSmall *= steepnessModifier;
+//                 oddsMed *= steepnessModifier;
+//                 oddsLarge *= steepnessModifier;
+//             }
+//             if(riverDistance > terrainBaseTypeOdds->minRiverDistance && riverDistance < terrainBaseTypeOdds->maxRiverDistance) {
+//                 double riverDistanceModifier = rangeMap(terrainBaseTypeOdds->minRiverDistance, terrainBaseTypeOdds->maxRiverDistance, terrainBaseTypeOdds->riverDistanceFrom, terrainBaseTypeOdds->riverDistanceTo, riverDistance);
+//                 odds *= riverDistanceModifier;
+//                 oddsSmall *= riverDistanceModifier;
+//                 oddsMed *= riverDistanceModifier;
+//                 oddsLarge *= riverDistanceModifier;
+//             }
+//             if(digFillOffset > terrainBaseTypeOdds->minDigFillOffset && digFillOffset < terrainBaseTypeOdds->maxDigFillOffset) {
+//                 double digFillOffsetModifier = rangeMap(terrainBaseTypeOdds->minDigFillOffset, terrainBaseTypeOdds->maxDigFillOffset, terrainBaseTypeOdds->digFillOffsetFrom, terrainBaseTypeOdds->digFillOffsetTo, digFillOffset);
+//                 odds *= digFillOffsetModifier;
+//                 oddsSmall *= digFillOffsetModifier;
+//                 oddsMed *= digFillOffsetModifier;
+//                 oddsLarge *= digFillOffsetModifier;
+//             }
+
+//             // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt" || terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt")
+//             // spLog("For %s:\n noiseValue      = %lf <? odds      = %lf: %s,\n noiseValueSmall = %lf <? oddsSmall = %lf: %s,\n noiseValueMed   = %lf <? oddsMed   = %lf: %s,\n noiseValueLarge = %lf <? oddsLarge = %lf: %s\n", terrainBaseTypeOdds->terrainBaseTypeIndex, noiseValue, odds, noiseValue < odds ? "true" : "false", noiseValueSmall, oddsSmall, noiseValueSmall < oddsSmall ? "true" : "false", noiseValueMed, oddsMed, noiseValueMed < oddsMed ? "true" : "false", noiseValueLarge, oddsLarge, noiseValueLarge < oddsLarge ? "true" : "false");
+//             if(noiseValue < odds && noiseValueSmall < oddsSmall && noiseValueMed < oddsMed && noiseValueLarge < oddsLarge) {
+//                 // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt" || terrainBaseTypeOdds->terrainBaseTypeIndex == "poorDirt") {
+//                 //     spLog("%s found", terrainBaseTypeOdds->terrainBaseTypeIndex);
+//                 // }
+//                 // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "redRock") {
+//                 //     spLog("redRockCount = %d, greenRockCount = %d", ++redRockCount, greenRockCount);
+//                 // }
+//                 // if(terrainBaseTypeOdds->terrainBaseTypeIndex == "greenRock") {
+//                 //     spLog("redRockCount = %d, greenRockCount = %d", redRockCount, ++greenRockCount);
+//                 // }
+//                 chosenTerrainBaseTypeOdds = terrainBaseTypeOdds;
+//                 break;
+//             } else {
+//                 // spLog("false for %s", terrainBaseTypeOdds->terrainBaseTypeIndex);
+//             }
+//         }
+
+//         uint32_t grassVariation = 0;
+//         for(int i = 0; i < chosenTerrainBaseTypeOdds->variationCount; i++) {
+//             char* variationIndex = chosenTerrainBaseTypeOdds->variations[i];
+//             uint32_t variation = threadState->getTerrainVariation(threadState, variationIndex);
+
+//             bool isGrassVariation = false;
+//             if(shouldAddVegetation && grassVariation == 0) {
+//                 for(int j = 0; j < GRASS_VARIATIONS_COUNT; j++) {
+//                     if(grassVariations[j] == variationIndex) {
+//                         isGrassVariation = true;
+//                         break;
+//                     }
+//                 }
+//             }
+
+//             bool isSnowVariation = false;
+//             if(!snowRemoved && hasSnow && (variationIndex == "snow" || variationIndex == "grassSnow")) {
+//                 isSnowVariation = true;
+//             }
+
+//             if(isSnowVariation) {
+//                 variations[result.variationCount++] = variation;
+//             }
+
+//             if(shouldAddVegetation && isGrassVariation) {
+//                 variations[result.variationCount++] = variation;
+//                 grassVariation = variation;
+//             }
+//         }
+
+//         result.surfaceBaseType = threadState->getTerrainBaseTypeIndex(threadState, chosenTerrainBaseTypeOdds->terrainBaseTypeIndex);
+//         result.materialIndex = 0;
+
+//         if(fillSurfaceBaseType != 0) {
+//             result.surfaceBaseType = fillSurfaceBaseType;
+//         }
+
+//         if(grassVariation != 0) {
+//             SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation);
+//             if(variationDefaults.materialIndex != 0) {
+//                 result.materialIndex = variationDefaults.materialIndex;
+// 			    result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+
+//                 result.decalTypeIndex = variationDefaults.decalGroupIndex;
+//             }
+//         }
+
+//         if(hasSnow) {
+//             SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, grassVariation != 0 ? terrainVariation_grassSnow : terrainVariation_snow);
+// 		    if(variationDefaults.materialIndex != 0) {
+//                 result.materialIndex = variationDefaults.materialIndex;
+// 			    result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+
+//                 if(grassVariation != 0) {
+//                     result.decalTypeIndex = variationDefaults.decalGroupIndex;
+//                 } else {
+//                     result.decalTypeIndex = 0;
+//                 }
+//             }
+//         }
+        
+//         if(result.materialIndex == 0) {
+//             SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
+//             result.materialIndex = defaults.materialIndex;
+//             result.decalTypeIndex = defaults.decalGroupIndex;
+//             result.pathDifficultyIndex = defaults.pathDifficultyIndex;
+//         }
+
+//         if(baseAltitude + SP_METERS_TO_PRERENDER((double)digFillOffset) < SEA_LEVEL)
+//         {
+//             if(baseAltitude < DEEP_SEA_LEVEL)
+//             {
+//                 SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_deepWater);
+//                 result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+//                 variations[result.variationCount++] = terrainVariation_deepWater;
+//             }
+//             else
+//             {
+//                 SPSurfaceTypeDefault variationDefaults = threadState->getSurfaceDefaultsForVariationType(threadState, terrainVariation_shallowWater);
+//                 result.pathDifficultyIndex = variationDefaults.pathDifficultyIndex;
+//                 variations[result.variationCount++] = terrainVariation_shallowWater;
+//             }
+//         }
+
+//         // if(steepness < 1) {
+//         //     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, threadState->getTerrainBaseTypeIndex(threadState, "greenRock"));
+//         //     result.materialIndex = defaults.materialIndex;
+//         //     result.decalTypeIndex = defaults.decalGroupIndex;
+//         //     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
+//         // } else {
+//         //     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, threadState->getTerrainBaseTypeIndex(threadState, "redRock"));
+//         //     result.materialIndex = defaults.materialIndex;
+//         //     result.decalTypeIndex = defaults.decalGroupIndex;
+//         //     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
+//         // }
+
+//         free(heightBiomesArray);
+
+//         return result;
+// }
 
 #define ADD_OBJECT(__addType__)\
 types[addedCount++] = __addType__;\

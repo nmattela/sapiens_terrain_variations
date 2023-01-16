@@ -38,12 +38,19 @@ function mod:onload(terrainTypes)
         })
     end
 
-    createDebug("debug_fjords")
-    createDebug("debug_mesa")
-    createDebug("debug_plains")
-    createDebug("debug_swamp")
-    createDebug("debug_desert_oasis")
-    createDebug("debug_hillsides")
+    -- for r = 0, 255, 1 do
+    --     for g = 0, 255, 1 do
+    --         for b = 0, 255, 1 do
+    --             createDebug("debug_"..r.."_"..g.."_")
+    --         end
+    --     end
+    -- end
+
+    for i = 0, 255, 1 do
+        createDebug("debug_"..i.."_0_0")
+        createDebug("debug_0_"..i.."_0")
+        createDebug("debug_0_0_"..i)
+    end
 end
 
 return mod
