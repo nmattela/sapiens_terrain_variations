@@ -1,3 +1,5 @@
+(Please note that this mod is very alpha, and may break your world now, or in future updates)
+
 Adds new terrain variations and biomes to the vanilla game.
 
 This mod changes 50% of all the vanilla terrain with custom biomes, including:

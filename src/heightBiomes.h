@@ -43,9 +43,9 @@ typedef struct BiomeOdds {
 #define MATRIX_ROWS 3
 
 static BiomeOdds *biomeMatrix[MATRIX_ROWS] = {
-/* ^ equator */    (BiomeOdds[]){{ MESA  , 0.125 , 0.00001, false }, { DESERT_OASIS, 0.375 , 0.00001, false },                                      { UNSET, 0.50, 0.0004, false }, { UNSET, 0, 0, true } },
-/* |         */    (BiomeOdds[]){{ PLAINS, 0.25  , 0.00001, false }, { MESA        , 0.05  , 0.00001, false }, { HILLSIDES, 0.20, 0.00001, false }, { UNSET, 0.50, 0.0004, false }, { UNSET, 0, 0, true } },
-/* v poles   */    (BiomeOdds[]){{ FJORDS, 0.375 , 0.00001, false }, { SWAMP       , 0.125 , 0.0001, false },                                       { UNSET, 0.50, 0.0004, false }, { UNSET, 0, 0, true } },
+/* ^ equator */    (BiomeOdds[]){{ MESA  , 0.125 , 0.00004, false }, { DESERT_OASIS, 0.375 , 0.00004, false },                                      { UNSET, 0.50, 0.00004, false }, { UNSET, 0, 0, true } },
+/* |         */    (BiomeOdds[]){{ PLAINS, 0.25  , 0.00004, false }, { MESA        , 0.05  , 0.00004, false }, { HILLSIDES, 0.20, 0.00004, false }, { UNSET, 0.50, 0.00004, false }, { UNSET, 0, 0, true } },
+/* v poles   */    (BiomeOdds[]){{ FJORDS, 0.375 , 0.00004, false }, { SWAMP       , 0.125 , 0.00004, false },                                      { UNSET, 0.50, 0.00004, false }, { UNSET, 0, 0, true } },
 };
 
 #define TERRAIN_BASE_TYPE_INDEX_COUNT 13

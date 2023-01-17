@@ -20,12 +20,12 @@
 
 HeightBiome* getHeightBiomeForPoint(SPVec3 noiseLoc) {
 
-    // DEBUG
-    HeightBiome* debug = malloc(sizeof(HeightBiome)*2);
-    debug[0] = (HeightBiome){ 1, 0 };
-    debug[1] = (HeightBiome){ hillsides, 1 };
-    return debug;
-    // DEBUG
+    // // DEBUG
+    // HeightBiome* debug = malloc(sizeof(HeightBiome)*2);
+    // debug[0] = (HeightBiome){ 1, 0 };
+    // debug[1] = (HeightBiome){ hillsides, 1 };
+    // return debug;
+    // // DEBUG
 
     // We do not use the vanilla perlin noise. Instead we use a verenoi noise provided to us by the FastNoiseLite library to generate our biomes
     fnl_state biomeNoiseGenerator = fnlCreateState();
