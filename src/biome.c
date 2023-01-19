@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 #include "SPBiome.h"
-#include "heightBiomes.h"
-#include "heightBiomesFlora.h"
+#include "customBiomes.h"
 #include "SPLog.h"
 #include "utils.h"
 #include "FastNoiseLite.h"
@@ -317,20 +316,20 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 		}
 	}
 
-	HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+	BiomeBlend* biomeBlendArray = getBiomeForPoint(noiseLoc);
 
-	uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+	uint16_t biomeBlendArraySize = biomeBlendArray[0].biome;
 
-	HeightBiome biome = heightBiomesArray[1];
+	BiomeBlend biome = biomeBlendArray[1];
 
 	BiomeTerrainBaseDistribution distribution = defaultTerrainDistribution;
 	switch(biome.biome) {
-		case fjords: distribution = fjordsTerrainDistribution;break;
-		case mesa: distribution = mesaTerrainDistribution;break;
-		case plains: distribution = plainsTerrainDistribution;break;
-		case swamp: distribution = swampTerrainDistribution;break;
-		case desertOasis: distribution = desertOasisTerrainDistribution;break;
-		case hillsides: distribution = hillsidesTerrainDistribution;break;
+		case Fjords: distribution = fjordsTerrainDistribution;break;
+		case Mesa: distribution = mesaTerrainDistribution;break;
+		case Plains: distribution = plainsTerrainDistribution;break;
+		case Swamp: distribution = swampTerrainDistribution;break;
+		case DesertOasis: distribution = desertOasisTerrainDistribution;break;
+		case Hillsides: distribution = hillsidesTerrainDistribution;break;
 		default: {
 			return incomingType;
 		}
@@ -478,7 +477,7 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 		}
 	}
 
-	free(heightBiomesArray);
+	free(biomeBlendArray);
 
 	return result;
 }
@@ -605,11 +604,11 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 
 
 
-//         HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+//         BiomeBlend* biomeBlendArray = getBiomeForPoint(noiseLoc);
 
-//         uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+//         uint16_t biomeBlendArraySize = biomeBlendArray[0].biome;
 
-//         HeightBiome biome = heightBiomesArray[1];
+//         BiomeBlend biome = biomeBlendArray[1];
 
 //         BiomeTerrainBaseDistribution distribution = defaultTerrainDistribution;
 //         switch(biome.biome) {
@@ -779,7 +778,7 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 //         //     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
 //         // }
 
-//         free(heightBiomesArray);
+//         free(biomeBlendArray);
 
 //         return result;
 // }
@@ -808,21 +807,21 @@ int spBiomeGetTransientGameObjectTypesForFaceSubdivision(
 
     int addedCount = 0;
 
-    HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+    BiomeBlend* biomeBlendArray = getBiomeForPoint(noiseLoc);
 
-    uint16_t heightBiomesSize = heightBiomesArray[0].biome;
+    uint16_t biomeBlendArraySize = biomeBlendArray[0].biome;
 
-    HeightBiome biome = heightBiomesArray[1];
+    BiomeBlend biome = biomeBlendArray[1];
 
 
     FloraDistribution distribution = defaultFloraDistribution;
     switch(biome.biome) {
-        case fjords: distribution = fjordsFloraDistribution;break;
-        case mesa: distribution = mesaFloraDistribution;break;
-        case plains: distribution = plainsFloraDistribution;break;
-        case swamp: distribution = swampFloraDistribution;break;
-        case desertOasis: distribution = desertOasisFloraDistribution;break;
-        case hillsides: distribution = hillsidesFloraDistribution;break;
+        case Fjords: distribution = fjordsFloraDistribution;break;
+        case Mesa: distribution = mesaFloraDistribution;break;
+        case Plains: distribution = plainsFloraDistribution;break;
+        case Swamp: distribution = swampFloraDistribution;break;
+        case DesertOasis: distribution = desertOasisFloraDistribution;break;
+        case Hillsides: distribution = hillsidesFloraDistribution;break;
         default: {
             return incomingTypeCount;
         }

@@ -1,5 +1,5 @@
 #include "SPHeight.h"
-#include "heightBiomes.h"
+#include "customBiomes.h"
 #include "utils.h"
 #include "SPLog.h"
 #include <stdio.h>
@@ -104,8 +104,8 @@ double generatePlains(
 
     double previous = SP_PRERENDER_TO_METERS(previousHeight.x);
 
-    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 500), 5);
-    height *= 50;
+    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 2000), 2);
+    height *= 700;
     height = fabs(height);
 
     if(riverDistance < 0.01 && previous >= -10) {
@@ -156,7 +156,7 @@ double generateDesertOasis(
 
     double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 9000), 4);
     height *= 150;
-    height += 50;
+    height += 75;
 
     if(riverDistance < 0.001 && previous >= -10) {
         height = rangeMap(0, 0.001, spMax(previous, -50.0), height, riverDistance);
@@ -180,9 +180,9 @@ double generateHillsides(
     
     double previous = SP_PRERENDER_TO_METERS(previousHeight.x);
 
-    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 45999.0), 1);
-    height *= 100;
-    height += 50;
+    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 7599.0), 2);
+    height *= 500;
+    height += 250;
 
 
     if(riverDistance < 0.001 && previous >= -10) {
@@ -221,9 +221,9 @@ SPVec4 spHeightGet(SPVec4 previousHeight,
                    double riverValue,
                    double riverDistance) {
 
-    HeightBiome* heightBiomesArray = getHeightBiomeForPoint(noiseLoc);
+    BiomeBlend* biomeBlendArray = getBiomeForPoint(noiseLoc);
 
-    uint16_t heightBiomeSize = heightBiomesArray[0].biome;
+    uint16_t biomeBlendSize = biomeBlendArray[0].biome;
 
     // //DEBUG
     // double height = generateHillsides(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
@@ -233,38 +233,38 @@ SPVec4 spHeightGet(SPVec4 previousHeight,
     // //DEBUG
 
     double totalHeight = 0.0;
-    for(int i = 1; i < heightBiomeSize+1; i++) {
-        HeightBiome heightBiome = heightBiomesArray[i];
+    for(int i = 1; i < biomeBlendSize+1; i++) {
+        BiomeBlend biomeBlend = biomeBlendArray[i];
 
         double height = SP_PRERENDER_TO_METERS(previousHeight.x);
-        switch(heightBiome.biome) {
-            case fjords: {
+        switch(biomeBlend.biome) {
+            case Fjords: {
                 height = generateFjords(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;
             }
-            case mesa: {
+            case Mesa: {
                 height = generateMesa(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;
             }
-            case plains: {
+            case Plains: {
                 height = generatePlains(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;
             }
-            case swamp: {
+            case Swamp: {
                 height = generateSwamp(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;
             }
-            case desertOasis: {
+            case DesertOasis: {
                 height = generateDesertOasis(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;
             }
-            case hillsides: {
+            case Hillsides: {
                 height = generateHillsides(previousHeight, noise1, noise2, pointNormal, noiseLoc, worldGenOptions, riverValue, riverDistance);
                 break;                
             }
         }
 
-        totalHeight += height * heightBiome.blend;
+        totalHeight += height * biomeBlend.blend;
     }
 
     SPVec4 result = previousHeight;

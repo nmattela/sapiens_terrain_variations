@@ -1,39 +1,359 @@
-#ifndef heightBiomesFlora
-#define heightBiomesFlora
+#ifndef customBiomesDefaults
+#define customBiomesDefaults
 
-#include "heightBiomesFlora.h"
+#include "customBiomes.h"
 
-struct FloraOdds;
-typedef struct FloraOdds {
-    int indexCount;
-    char** floraIndices;
+static TerrainBaseTypeOdds redRockDefault = {
+    .terrainBaseTypeIndex = "redRock",
+    .odds = 0.00007,//0.0004,
+    .size = XS,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 8,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 1,
+    .steepnessTo = 100,
+    .minSteepness = 0,
+    .maxSteepness = 1,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 1.2,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 1,
+    .variations = { "redRock" },
+};
 
-    int level;
+static TerrainBaseTypeOdds greenRockDefault = {
+    .terrainBaseTypeIndex = "greenRock",
+    .odds = 0.00005,
+    .size = XS,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 8,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 1,
+    .steepnessTo = 100,
+    .minSteepness = 0,
+    .maxSteepness = 1,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 1.2,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 1,
+    .variations = { "greenRock" },
+};
 
-    double odds;
-    int density;
+static TerrainBaseTypeOdds limestoneDefault = {
+    .terrainBaseTypeIndex = "limestone",
+    .odds = 0.001,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 40,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 2,
+    .steepnessTo = 100,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.01,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 10,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 1,
+    .variations = { "limestone" },
+};
 
-    double altitudeFrom;
-    double altitudeTo;
-    double minAltitude;
-    double maxAltitude;
+static TerrainBaseTypeOdds clayDefault = {
+    .terrainBaseTypeIndex = "clay",
+    .odds = 0.005,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 8,
+    .minBaseAltitude = 0.0001,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 6,
+    .steepnessTo = 60,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 2,
+    .riverDistanceTo = 1,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 100,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 1,
+    .variations = { "clay" }
+};
 
-    double steepnessFrom;
-    double steepnessTo;
-    double minSteepness;
-    double maxSteepness;
+static TerrainBaseTypeOdds desertSandDefault = {
+    .terrainBaseTypeIndex = "desertSand",
+    .odds = 0.009,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 1,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 2,
+    .steepnessTo = 200,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 1.4,
+    .riverDistanceTo = 1,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.01,
+    .digFillOffsetFrom = 0,
+    .digFillOffsetTo = 100,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 0,
+    .variations = {  },
+};
 
-    double riverDistanceFrom;
-    double riverDistanceTo;
-    double minRiverDistance;
-    double maxRiverDistance;
+static TerrainBaseTypeOdds rockDefault = {
+    .terrainBaseTypeIndex = "rock",
+    .odds = 0.006,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 80,
+    .minBaseAltitude = 0.00001,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 3,
+    .steepnessTo = 600,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 100000,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 0,
+    .variations = {  },
+};
+
+static TerrainBaseTypeOdds richDirtDefault = {
+    .terrainBaseTypeIndex = "richDirt",
+    .odds = 0.003,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 0,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.0001,
+    .steepnessFrom = 0.0001,
+    .steepnessTo = 0.00000001,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 100,
+    .riverDistanceTo = 1,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 0.00001,
+    .digFillOffsetTo = 0.00001,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 3,
+    .variations = {
+        "snow",
+        "grassSnow",
+        "temperateGrass",
+        // "temperateGrassPlentiful",
+        // "temperateGrassWinter",
+        // "taigaGrass",
+        // "mediterraneanGrass",
+        // "mediterraneanGrassPlentiful",
+        // "steppeGrass",
+        // "tropicalRainforestGrass",
+        // "tropicalRainforestGrassPlentiful",
+        // "savannaGrass",
+        // "tundraGrass",
+    }
+};
+
+static TerrainBaseTypeOdds poorDirtDefault = {
+    .terrainBaseTypeIndex = "poorDirt",
+    .odds = 0.004,
+    .size = M,
+    .baseAltitudeFrom = 5,
+    .baseAltitudeTo = 0,
+    .minBaseAltitude = 0.0001,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 0.001,
+    .steepnessTo = 0.00001,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 10,
+    .minRiverDistance = 0.1,
+    .maxRiverDistance = 10,
+    .digFillOffsetFrom = 0.00001,
+    .digFillOffsetTo = 0.00001,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 3,
+    .variations = {
+        "snow",
+        "grassSnow",
+        "temperateGrass",
+        // "temperateGrassPlentiful",
+        // "temperateGrassWinter",
+        // "taigaGrass",
+        // "mediterraneanGrass",
+        // "mediterraneanGrassPlentiful",
+        // "steppeGrass",
+        // "tropicalRainforestGrass",
+        // "tropicalRainforestGrassPlentiful",
+        // "savannaGrass",
+        // "tundraGrass",
+    }
+};
+
+static TerrainBaseTypeOdds dirtDefault = {
+    .terrainBaseTypeIndex = "dirt",
+    .odds = 0.009,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 0,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 0.8,
+    .steepnessTo = 0.0005,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 1,
+    .riverDistanceTo = 1,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.1,
+    .digFillOffsetFrom = 1,
+    .digFillOffsetTo = 0.00001,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 3,
+    .variations = {
+        "snow",
+        "grassSnow",
+        "temperateGrass",
+        // "temperateGrassPlentiful",
+        // "temperateGrassWinter",
+        // "taigaGrass",
+        // "mediterraneanGrass",
+        // "mediterraneanGrassPlentiful",
+        // "steppeGrass",
+        // "tropicalRainforestGrass",
+        // "tropicalRainforestGrassPlentiful",
+        // "savannaGrass",
+        // "tundraGrass",
+    }
+};
 
 
-} FloraOdds;
 
-//----------------//
-//--- DEFAULTS ---//
-//----------------//
+static TerrainBaseTypeOdds beachSandDefault = {
+    .terrainBaseTypeIndex = "beachSand",
+    .odds = 1.0,
+    .size = M,
+    .baseAltitudeFrom = 0,
+    .baseAltitudeTo = 0,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 0,
+    .steepnessTo = 0,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 0,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.01,
+    .digFillOffsetFrom = 0,
+    .digFillOffsetTo = 0,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 0,
+    .variations = {  },
+};
+
+static TerrainBaseTypeOdds riverSandDefault = {
+    .terrainBaseTypeIndex = "riverSand",
+    .odds = 1.0,
+    .size = M,
+    .baseAltitudeFrom = 0,
+    .baseAltitudeTo = 0,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 0,
+    .steepnessTo = 0,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 1,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.01,
+    .digFillOffsetFrom = 0,
+    .digFillOffsetTo = 0,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 0,
+    .variations = {  },
+};
+
+
+static TerrainBaseTypeOdds desertRedSandDefault = {
+    .terrainBaseTypeIndex = "desertRedSand",
+    .odds = 0.1,
+    .size = M,
+    .baseAltitudeFrom = 1,
+    .baseAltitudeTo = 1,
+    .minBaseAltitude = 0,
+    .maxBaseAltitude = 0.001,
+    .steepnessFrom = 1,
+    .steepnessTo = 1,
+    .minSteepness = 0.2,
+    .maxSteepness = 2,
+    .riverDistanceFrom = 0.4,
+    .riverDistanceTo = 0,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0.01,
+    .digFillOffsetFrom = 0,
+    .digFillOffsetTo = 100,
+    .minDigFillOffset = -0.2,
+    .maxDigFillOffset = -INFINITY,
+    .variationCount = 0,
+    .variations = {  },
+};
+
+
+
+static TerrainBaseTypeOdds* defaultTerrainBaseTypeOdds[] = {
+    &redRockDefault,
+    &greenRockDefault,
+    &limestoneDefault,
+    &clayDefault,
+    &desertSandDefault,
+    &rockDefault,
+    &richDirtDefault,
+    &poorDirtDefault,
+    &dirtDefault,
+};
+static BiomeTerrainBaseDistribution defaultTerrainDistribution = {
+    Unset,
+    9,
+    defaultTerrainBaseTypeOdds,
+};
 
 static FloraOdds defaultPineBig = {
     .indexCount = 1,
@@ -954,671 +1274,6 @@ static FloraOdds defaultTurmericPlant = {
     .maxRiverDistance = 0,
 };
 
-//--------------------//
-//--- END DEFAULTS ---//
-//--------------------//
-
-//--------------//
-//--- FJORDS ---//
-//--------------//
-
-static FloraOdds fjordsWheatPlant = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "wheatPlant",
-    },
-    .level = 19,
-
-    .odds = 0.0024,
-    .density = 5,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1.7,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds fjordsFlaxPlant = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "flaxPlant",
-    },
-    .level = 19,
-
-    .odds = 0.0024,
-    .density = 3,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1.7,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds fjordsAspen = {
-    .indexCount= 3,
-    .floraIndices = (char*[]){
-        "aspen1",
-        "aspen2",
-        "aspen3"
-    },
-    .level = 16,
-
-    .odds = 0.15,
-    .density = 6,
-
-    .altitudeFrom = 0.7,
-    .altitudeTo = 2.2,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 0.4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.001,
-};
-
-static FloraOdds fjordsPine = {
-    .indexCount= 4,
-    .floraIndices = (char*[]){
-        "pine1",
-        "pine2",
-        "pine3",
-        "pine4",
-    },
-    .level = 17,
-
-    .odds = 0.25,
-    .density = 20,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 0.2,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 30,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.001,
-};
-
-//------------------//
-//--- END FJORDS ---//
-//------------------//
-
-//------------//
-//--- MESA ---//
-//------------//
-
-static FloraOdds mesaRockPebble = {
-    .indexCount = 3,
-    .floraIndices = (char*[]){
-        "rock",
-        "rockSmall",
-        "rockLarge",
-    },
-    .level = 19,
-
-    .odds = 0.05,
-    .density = 5,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 4,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 20,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaRedRock = {
-    .indexCount = 3,
-    .floraIndices = (char*[]){
-        "redRock",
-        "redRockSmall",
-        "redRockLarge",
-    },
-    .level = 18,
-
-    .odds = 0.017,
-    .density = 3,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 5,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 8,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaGreenRock = {
-    .indexCount = 3,
-    .floraIndices = (char*[]){
-        "greenRock",
-        "greenRockSmall",
-        "greenRockLarge",
-    },
-    .level = 18,
-
-    .odds = 0.021,
-    .density = 5,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 4,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 12,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaLimestoneRock = {
-    .indexCount = 3,
-    .floraIndices = (char*[]){
-        "limestoneRock",
-        "limestoneRockSmall",
-        "limestoneRockLarge",
-    },
-    .level = 19,
-
-    .odds = 0.04,
-    .density = 6,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 4,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 15,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaFlint = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "flint",
-    },
-    .level = 20,
-
-    .odds = 0.09,
-    .density = 1,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 4,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaClayBall = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "clay",
-    },
-    .level = 19,
-
-    .odds = 0.05,
-    .density = 4,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 0.7,
-    .minAltitude = 0,
-    .maxAltitude = 0.01,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 2,
-
-    .riverDistanceFrom = 4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.0003,
-};
-
-static FloraOdds mesaBone = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "bone",
-    },
-    .level = 19,
-
-    .odds = 0.0075,
-    .density = 1,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 1,
-    .minAltitude = 1,
-    .maxAltitude = 1,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-//----------------//
-//--- END MESA ---//
-//----------------//
-
-//--------------//
-//--- PLAINS ---//
-//--------------//
-
-static FloraOdds plainsAppleTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "appleTree",
-    },
-    .level = 18,
-
-    .odds = 0.002,
-    .density = 4,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds plainsOrangeTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "orangeTree",
-    },
-    .level = 18,
-
-    .odds = 0.002,
-    .density = 4,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds plainsPeachTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "peachTree",
-    },
-    .level = 18,
-
-    .odds = 0.002,
-    .density = 4,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds plainsElderBerryTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "elderberryTree",
-    },
-    .level = 18,
-
-    .odds = 0.002,
-    .density = 4,
-
-    .altitudeFrom = 2,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.001,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-static FloraOdds plainsForest = {
-    .indexCount= 11,
-    .floraIndices = (char*[]){
-        "birch1",
-        "aspen1",
-        "appleTree",
-        "birch2",
-        "aspen2",
-        "orangeTree",
-        "birch3",
-        "aspen3",
-        "peachTree",
-        "birch4",
-        "elderberryTree",
-    },
-    .level = 16,
-
-    .odds = 0.042,
-    .density = 35,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 0,
-    .minSteepness = 0.2,
-    .maxSteepness = 6,
-
-    .riverDistanceFrom = 0.4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.001,
-};
-
-static FloraOdds plainsSunflower = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "sunflower"
-    },
-    .level = 19,
-
-    .odds = 0.037,
-    .density = 11,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 1,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 0.4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.001,    
-};
-
-//------------------//
-//--- END PLAINS ---//
-//------------------//
-
-//-------------//
-//--- SWAMP ---//
-//-------------//
-
-static FloraOdds swampWillow = {
-    .indexCount = 2,
-    .floraIndices = (char*[]){
-        "willow1",
-        "willow2"
-    },
-    .level = 17,
-
-    .odds = 0.056,
-    .density = 3,
-
-    .altitudeFrom = 10,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0.0000002,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 1,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 4,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.01,
-};
-
-static FloraOdds swampWillowBranch = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "willowBranch"
-    },
-    .level = 20,
-
-    .odds = 0.056,
-    .density = 2,
-
-    .altitudeFrom = 1,
-    .altitudeTo = 1,
-    .minAltitude = 0,
-    .maxAltitude = 0,
-
-    .steepnessFrom = 1,
-    .steepnessTo = 1,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.01,
-};
-
-//-----------------//
-//--- END SWAMP ---//
-//-----------------//
-
-//--------------------//
-//--- DESERT OASIS ---//
-//--------------------//
-
-static FloraOdds desertOasisBananaTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "bananaTree"
-    },
-    .level = 19,
-
-    .odds = 0,
-    .density = 3,
-
-    .altitudeFrom = 0.32,
-    .altitudeTo = 0,
-    .minAltitude = 0,
-    .maxAltitude = 0.0000002,
-
-    .steepnessFrom = 0,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.00001,
-};
-
-static FloraOdds desertOasisCoconutTree = {
-    .indexCount = 1,
-    .floraIndices = (char*[]){
-        "coconutTree"
-    },
-    .level = 18,
-
-    .odds = 0,
-    .density = 6,
-
-    .altitudeFrom = 0.4,
-    .altitudeTo = 0,
-    .minAltitude = 0,
-    .maxAltitude = 0.0000002,
-
-    .steepnessFrom = 0,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 1,
-    .riverDistanceTo = 1,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0.00001,
-};
-
-//------------------------//
-//--- END DESERT OASIS ---//
-//------------------------//
-
-//-----------------//
-//--- HILLSIDES ---//
-//-----------------//
-
-static FloraOdds hillsidesForest = {
-    .indexCount= 11,
-    .floraIndices = (char*[]){
-        "birch1",
-        "aspen1",
-        "appleTree",
-        "birch2",
-        "aspen2",
-        "orangeTree",
-        "birch3",
-        "aspen3",
-        "peachTree",
-        "birch4",
-        "elderberryTree",
-    },
-    .level = 16,
-
-    .odds = 0,
-    .density = 35,
-
-    .altitudeFrom = 1000,
-    .altitudeTo = 0,
-    .minAltitude = 0,
-    .maxAltitude = 0.000005,
-
-    .steepnessFrom = 0,
-    .steepnessTo = 0,
-    .minSteepness = 0,
-    .maxSteepness = 0,
-
-    .riverDistanceFrom = 0,
-    .riverDistanceTo = 0,
-    .minRiverDistance = 0,
-    .maxRiverDistance = 0,
-};
-
-//---------------------//
-//--- END HILLSIDES ---//
-//---------------------//
-
-struct FloraDistribution;
-typedef struct FloraDistribution {
-    uint16_t biome;
-    int floraOddsCount;
-    FloraOdds** floraOdds;
-} FloraDistribution;
-
 static FloraOdds* defaultFloraOdds[] = {
     &defaultPineBig,
     &defaultAspenBig,
@@ -1638,148 +1293,9 @@ static FloraOdds* defaultFloraOdds[] = {
     &defaultBone,
 };
 static FloraDistribution defaultFloraDistribution = {
-    unset,
+    Unset,
     16,
     defaultFloraOdds
-};
-
-static FloraOdds* fjordsFloraOdds[] = {
-    &defaultPineBig,
-    &defaultAspenBig,
-    &defaultRock,
-    &defaultRedRock,
-    &defaultGreenRock,
-    &defaultLimestoneRock,
-    &defaultFlint,
-    &defaultPineBranch,
-    &defaultClay,
-    &defaultDeadMammoth,
-    &defaultBone,
-    &defaultAppleTree,
-    &defaultElderBerryTree,
-    &defaultRaspberryBush,
-    &defaultGooseberryBush,
-    &fjordsWheatPlant,
-    &fjordsFlaxPlant,
-    &defaultPoppyPlant,
-    &defaultGarlicPlant,
-    &fjordsAspen,
-    &fjordsPine,
-};
-static FloraDistribution fjordsFloraDistribution = {
-    fjords,
-    21,
-    fjordsFloraOdds
-};
-
-static FloraOdds* mesaFloraOdds[] = {
-    &mesaRockPebble,
-    &mesaRedRock,
-    &mesaGreenRock,
-    &mesaLimestoneRock,
-    &mesaFlint,
-    &mesaClayBall,
-    &defaultDeadAlpaca,
-    &mesaBone,
-    &defaultGingerPlant,
-    &defaultAloePlant,
-    &defaultMarigoldPlant,
-    &defaultTurmericPlant,
-    &defaultPineBranch,
-};
-static FloraDistribution mesaFloraDistribution = {
-    mesa,
-    13,
-    mesaFloraOdds
-};
-
-static FloraOdds* plainsFloraOdds[] = {
-    &defaultRock,
-    &defaultRedRock,
-    &defaultGreenRock,
-    &defaultLimestoneRock,
-    &defaultClay,
-    &defaultFlint,
-    &plainsForest,
-    &plainsSunflower,
-    &defaultRaspberryBush,
-    &defaultGooseberryBush,
-    &defaultBeetrootPlant,
-    &defaultPumpkinPlant,
-    &defaultWheatPlant,
-    &defaultFlaxPlant,
-    &defaultPoppyPlant,
-    &defaultDeadAlpaca,
-    &defaultDeadMammoth,
-    &defaultBone,
-};
-static FloraDistribution plainsFloraDistribution = {
-    plains,
-    15,
-    plainsFloraOdds
-};
-
-static FloraOdds* swampFloraOdds[] = {
-    &defaultRock,
-    &defaultRedRock,
-    &defaultGreenRock,
-    &defaultLimestoneRock,
-    &defaultClay,
-    &defaultFlint,
-    &swampWillow,
-    &swampWillowBranch,
-    &defaultPumpkinPlant,
-    &defaultElderBerryTree,
-    &defaultFlaxPlant,
-    &defaultPoppyPlant,
-    &defaultGooseberryBush,
-    &defaultEchinaceaPlant,
-    &defaultGarlicPlant,
-    &defaultDeadAlpaca,
-    &defaultDeadMammoth,
-    &defaultBone,
-};
-static FloraDistribution swampFloraDistribution = {
-    swamp,
-    18,
-    swampFloraOdds
-};
-
-static FloraOdds* desertOasisFloraOdds[] = {
-    &defaultRock,
-    &defaultGreenRock,
-    &defaultRedRock,
-    &defaultAloePlant,
-    &defaultMarigoldPlant,
-    &defaultGingerPlant,
-    &defaultTurmericPlant,
-    &mesaBone,
-    &defaultDeadAlpaca,
-    &desertOasisBananaTree,
-    &desertOasisCoconutTree
-};
-static FloraDistribution desertOasisFloraDistribution = {
-    desertOasis,
-    11,
-    desertOasisFloraOdds
-};
-
-static FloraOdds* hillsidesFloraOdds[] = {
-    &defaultRock,
-    &defaultLimestoneRock,
-    &defaultFlint,
-    &defaultWheatPlant,
-    &defaultFlaxPlant,
-    &defaultBirchBranch,
-    &hillsidesForest,
-    &defaultDeadAlpaca,
-    &defaultDeadMammoth,
-    &defaultBone
-};
-static FloraDistribution hillsidesFloraDistribution = {
-    hillsides,
-    10,
-    hillsidesFloraOdds
 };
 
 #endif

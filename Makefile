@@ -4,7 +4,7 @@ MOD_DIRECTORY := /mnt/LinuxHDD/SteamLibrary/steamapps/compatdata/1060230/pfx/dri
 MOD_ID := sapiens_terrain_variations
 
 init:
-	${CMAKE_BINARY} -DMOD_ID=${MOD_ID} -DMOD_NAME="Terrain Variations" -DDESCRIPTION="Adds new terrain variations and biomes (WIP) to the vanilla game" -DDEVELOPER="nmattela" -DDEVELOPER_URL="https://github.com/nmattela/sapiens_terrain_variations" -DPREVIEW_FILE="preview.png" -DMOD_MAJOR_VERSION=0 -DMOD_MINOR_VERSION=1 -DMOD_PATCH_VERSION=0 . -B build
+	${CMAKE_BINARY} -DMOD_ID=${MOD_ID} -DMOD_NAME="Terrain Variations" -DDESCRIPTION="Adds new terrain variations and biomes (WIP) to the vanilla game" -DDEVELOPER="nmattela" -DDEVELOPER_URL="https://github.com/nmattela/sapiens_terrain_variations" -DPREVIEW_FILE="preview.png" -DMOD_MAJOR_VERSION=1 -DMOD_MINOR_VERSION=0 -DMOD_PATCH_VERSION=1 . -B build
 	cmake --build build/
 	- rm ${MOD_DIRECTORY}/${MOD_ID}
 	ln -s ${BUILD_DIRECTORY}/${MOD_ID}/ ${MOD_DIRECTORY}/${MOD_ID}

@@ -2,7 +2,6 @@
 #define utils
 
 #include <math.h>
-#include "map.h"
 
 #define PI 3.14159265358979323846
 
