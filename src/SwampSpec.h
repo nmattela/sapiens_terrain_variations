@@ -3,12 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome SwampBiome = {
-    .type = Swamp,
-    .odds = 0.125,
-    .subBiomes = {},
-};
-
 
 static TerrainBaseTypeOdds swampLimestone = {
     .terrainBaseTypeIndex = "limestone",
@@ -173,7 +167,7 @@ static TerrainBaseTypeOdds* swampTerrainBaseTypeOdds[] = {
     &swampRichDirt,
     &swampDirt
 };
-static BiomeTerrainBaseDistribution swampTerrainDistribution = {
+static TerrainBaseDistribution swampTerrainDistribution = {
     Swamp,
     7,
     swampTerrainBaseTypeOdds,
@@ -260,6 +254,24 @@ static FloraDistribution swampFloraDistribution = {
     swampFloraOdds
 };
 
+double getSwampHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance);
 
+static Biome SwampBiome = {
+    .type = Swamp,
+    .odds = 0.125,
+    .terrainBaseDistribution = &swampTerrainDistribution,
+    .floraDistribution = &swampFloraDistribution,
+    .getHeight = &getSwampHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {},
+};
 
 #endif

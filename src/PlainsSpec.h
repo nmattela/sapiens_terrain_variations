@@ -3,13 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome PlainsBiome = {
-    .type = Plains,
-    .odds = 0.25,
-    .subBiomes = {},
-};
-
-
 static TerrainBaseTypeOdds plainsLimestone = {
     .terrainBaseTypeIndex = "limestone",
     .odds = 0.001,
@@ -178,7 +171,7 @@ static TerrainBaseTypeOdds* plainsTerrainBaseTypeOdds[] = {
     &plainsPoorDirt,
     &plainsRichDirt,
 };
-static BiomeTerrainBaseDistribution plainsTerrainDistribution = {
+static TerrainBaseDistribution plainsTerrainDistribution = {
     Plains,
     8,
     plainsTerrainBaseTypeOdds,
@@ -379,5 +372,26 @@ static FloraDistribution plainsFloraDistribution = {
     15,
     plainsFloraOdds
 };
+
+double getPlainsHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance);
+
+static Biome PlainsBiome = {
+    .type = Plains,
+    .odds = 0.25,
+    .terrainBaseDistribution = &plainsTerrainDistribution,
+    .floraDistribution = &plainsFloraDistribution,
+    .getHeight = &getPlainsHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {},
+};
+
 
 #endif

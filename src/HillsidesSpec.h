@@ -3,12 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome HillsidesBiome = {
-    .type = Hillsides,
-    .odds = 0.2,
-    .subBiomes = {},
-};
-
 
 static TerrainBaseTypeOdds hillsidesLimestone = {
     .terrainBaseTypeIndex = "limestone",
@@ -234,7 +228,7 @@ static TerrainBaseTypeOdds* hillsidesTerrainBaseTypeOdds[] = {
     &hillsidesPoorDirt,
     &hillsidesRichDirt,
 };
-static BiomeTerrainBaseDistribution hillsidesTerrainDistribution = {
+static TerrainBaseDistribution hillsidesTerrainDistribution = {
     Hillsides,
     9,
     hillsidesTerrainBaseTypeOdds,
@@ -295,6 +289,26 @@ static FloraDistribution hillsidesFloraDistribution = {
     Hillsides,
     10,
     hillsidesFloraOdds
+};
+
+double getHillsidesHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance);
+
+static Biome HillsidesBiome = {
+    .type = Hillsides,
+    .odds = 0.2,
+    .terrainBaseDistribution = &hillsidesTerrainDistribution,
+    .floraDistribution = &hillsidesFloraDistribution,
+    .getHeight = &getHillsidesHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {},
 };
 
 #endif

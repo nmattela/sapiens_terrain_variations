@@ -7,6 +7,8 @@
         "spcommon.h": "c",
         "spmath.h": "c",
         "stdint.h": "c",
-        "spnoise.h": "c"
+        "spnoise.h": "c",
+        "fjordsspec.h": "c",
+        "mesaspec.h": "c"
     }
 }

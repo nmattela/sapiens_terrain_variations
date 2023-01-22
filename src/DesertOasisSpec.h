@@ -3,12 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome DesertOasisBiome = {
-    .type = DesertOasis,
-    .odds = 0.375,
-    .subBiomes = {},
-};
-
 
 static TerrainBaseTypeOdds desertOasisLimestone = {
     .terrainBaseTypeIndex = "limestone",
@@ -233,7 +227,7 @@ static TerrainBaseTypeOdds* desertOasisTerrainBaseTypeOdds[] = {
     &desertOasisDesertSand,
     &desertOasisDesertRedSand,
 };
-static BiomeTerrainBaseDistribution desertOasisTerrainDistribution = {
+static TerrainBaseDistribution desertOasisTerrainDistribution = {
     DesertOasis,
     9,
     desertOasisTerrainBaseTypeOdds,
@@ -293,6 +287,32 @@ static FloraOdds desertOasisCoconutTree = {
     .maxRiverDistance = 0.00001,
 };
 
+static FloraOdds desertOasisBone = {
+    .indexCount = 1,
+    .floraIndices = (char*[]){
+        "bone",
+    },
+    .level = 19,
+
+    .odds = 0.0075,
+    .density = 1,
+
+    .altitudeFrom = 1,
+    .altitudeTo = 1,
+    .minAltitude = 1,
+    .maxAltitude = 1,
+
+    .steepnessFrom = 1,
+    .steepnessTo = 0,
+    .minSteepness = 0.2,
+    .maxSteepness = 6,
+
+    .riverDistanceFrom = 1,
+    .riverDistanceTo = 1,
+    .minRiverDistance = 0,
+    .maxRiverDistance = 0,
+};
+
 static FloraOdds* desertOasisFloraOdds[] = {
     &defaultRock,
     &defaultGreenRock,
@@ -301,7 +321,7 @@ static FloraOdds* desertOasisFloraOdds[] = {
     &defaultMarigoldPlant,
     &defaultGingerPlant,
     &defaultTurmericPlant,
-    &mesaBone,
+    &desertOasisBone,
     &defaultDeadAlpaca,
     &desertOasisBananaTree,
     &desertOasisCoconutTree
@@ -310,6 +330,27 @@ static FloraDistribution desertOasisFloraDistribution = {
     DesertOasis,
     11,
     desertOasisFloraOdds
+};
+
+double getDesertOasisHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance);
+
+
+static Biome DesertOasisBiome = {
+    .type = DesertOasis,
+    .odds = 0.375,
+    .terrainBaseDistribution = &desertOasisTerrainDistribution,
+    .floraDistribution = &desertOasisFloraDistribution,
+    .getHeight = &getDesertOasisHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {},
 };
 
 #endif

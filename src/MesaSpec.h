@@ -3,18 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome MesaBiome = {
-    .type = Mesa,
-    .odds = 0.125,
-    .subBiomes = {}
-};
-
-static Biome MesaBiomeFewer = {
-    .type = Mesa,
-    .odds = 0.125,
-    .subBiomes = {}
-};
-
 static TerrainBaseTypeOdds mesaLimestone = {
     .terrainBaseTypeIndex = "limestone",
     .odds = 0.001,
@@ -231,7 +219,7 @@ static TerrainBaseTypeOdds* mesaTerrainBaseTypeOdds[] = {
     &mesaPoorDirt,
     &mesaDirt,
 };
-static BiomeTerrainBaseDistribution mesaTerrainDistribution = {
+static TerrainBaseDistribution mesaTerrainDistribution = {
     Mesa,
     10,
     mesaTerrainBaseTypeOdds,
@@ -446,6 +434,58 @@ static FloraDistribution mesaFloraDistribution = {
     Mesa,
     13,
     mesaFloraOdds
+};
+
+double getMesaHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance);
+
+double getMonumentValleyHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance
+);
+
+static Biome MonumentValleyBiome = {
+    .type = MonumentValley,
+    .odds = 0.5,
+    .terrainBaseDistribution = &mesaTerrainDistribution,
+    .floraDistribution = &mesaFloraDistribution,
+    .getHeight = &getMonumentValleyHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {}
+};
+
+static Biome MesaBiome = {
+    .type = Mesa,
+    .odds = 0.125,
+    .terrainBaseDistribution = &mesaTerrainDistribution,
+    .floraDistribution = &mesaFloraDistribution,
+    .getHeight = &getMesaHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {}
+};
+
+
+static Biome MesaBiomeFewer = {
+    .type = Mesa,
+    .odds = 0.125,
+    .terrainBaseDistribution = &mesaTerrainDistribution,
+    .floraDistribution = &mesaFloraDistribution,
+    .getHeight = &getMesaHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {}
 };
 
 #endif

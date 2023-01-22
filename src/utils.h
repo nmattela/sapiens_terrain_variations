@@ -5,6 +5,8 @@
 
 #define PI 3.14159265358979323846
 
+#define SP_PRERENDER_TO_METERS(_prerender_) ((_prerender_) * 8388608.0)
+
 double rangeMap(double oldMin, double oldMax, double newMin, double newMax, double oldValue);
 
 double rangeMapNoInvert(double oldMin, double oldMax, double newMin, double newMax, double oldValue);

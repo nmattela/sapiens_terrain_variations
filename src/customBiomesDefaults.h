@@ -349,7 +349,7 @@ static TerrainBaseTypeOdds* defaultTerrainBaseTypeOdds[] = {
     &poorDirtDefault,
     &dirtDefault,
 };
-static BiomeTerrainBaseDistribution defaultTerrainDistribution = {
+static TerrainBaseDistribution defaultTerrainDistribution = {
     Unset,
     9,
     defaultTerrainBaseTypeOdds,

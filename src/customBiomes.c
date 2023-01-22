@@ -2,8 +2,85 @@
 #include "SPLog.h"
 #include "utils.h"
 #include "FastNoiseLite.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+BiomeThreshold* calculateOddsThresholds(Biome** biomeRow, int biomeRowSize) {
+    BiomeThreshold* oddsThresholds = malloc(sizeof(BiomeThreshold) * (biomeRowSize));
+    double threshold = 1;
+    for(int i = 0; i < biomeRowSize; i++) {
+        Biome* biome = biomeRow[i];
+        threshold -= biome->odds;
+        BiomeThreshold oddsThreshold = {
+            .biome = biome,
+            .threshold = threshold,
+        };
+        oddsThresholds[i] = oddsThreshold;
+    }
+
+    
+
+    return oddsThresholds;
+}
+
+Biome* recursivelyFindBiome(BiomeThreshold* oddsThresholds, int oddsThresholdsSize, double biomeNoise) {
+    BiomeThreshold biomeOfChoice;
+    bool found = false;
+    for(int i = 0; i < oddsThresholdsSize; i++) {
+        BiomeThreshold oddsThreshold = oddsThresholds[i];
+        if(biomeNoise >= oddsThreshold.threshold && (!found || biomeNoise < biomeOfChoice.threshold)) {
+            biomeOfChoice = oddsThreshold;
+            found = true;
+        }
+    }
+
+    if(!found) {
+        return NULL;
+    } else if(biomeOfChoice.biome->subBiomesSize > 0) {
+        double oddsFrom = biomeOfChoice.threshold;
+        double oddsTo   = biomeOfChoice.threshold + biomeOfChoice.biome->odds;
+
+        double newNoise = rangeMap(oddsFrom, oddsTo, 0, 1, biomeNoise);
+
+        spLog("THIS GETS CALLED");
+        BiomeThreshold* newOddsThresholds = calculateOddsThresholds(biomeOfChoice.biome->subBiomes, biomeOfChoice.biome->subBiomesSize);
+        spLog("END THIS GETS CALLED");
+
+        Biome* recurseResult = recursivelyFindBiome(newOddsThresholds, biomeOfChoice.biome->subBiomesSize, newNoise);
+
+        //free(newOddsThresholds);
+
+        if(recurseResult == NULL) {
+            return biomeOfChoice.biome;
+        } else {
+            return recurseResult;
+        }
+
+    } else {
+        return biomeOfChoice.biome;
+    }
+}
+
+Biome** biomeMatrix[MATRIX_ROWS];
+bool isInitialized = false;
+void customBiomesInit() {
+
+	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome  , &DesertOasisBiome,                  &UnsetBiome, &StopBiome };
+	/* |         */ static Biome* latitude2[] = { &PlainsBiome, &MesaBiomeFewer  , &HillsidesBiome, &UnsetBiome, &StopBiome };
+	/* v poles   */ static Biome* latitude3[] = { &FjordsBiome, &SwampBiome      ,                  &UnsetBiome, &StopBiome };
+
+    static Biome** latitudes[MATRIX_ROWS] = {
+        latitude1,
+        latitude2,
+        latitude3
+    };
+
+    memcpy(biomeMatrix, latitudes, sizeof(latitudes));
+
+    isInitialized = true;
+}
+
 
 /**
  * 
@@ -20,10 +97,14 @@
 
 BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
 
+    if(!isInitialized) {
+        customBiomesInit();
+    }
+
     // // DEBUG
     // BiomeBlend* debug = malloc(sizeof(BiomeBlend)*2);
     // debug[0] = (BiomeBlend){ 1, 0 };
-    // debug[1] = (BiomeBlend){ Plains, 1 };
+    // debug[1] = (BiomeBlend){ Mesa, 1 };
     // return debug;
     // // DEBUG
 
@@ -60,14 +141,7 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
     }
 
     // Convert the `.odds` (a double from 0 to 1) to a threshold between 0 and 1 that indicates that if our random noise (again, range from 0 to 1) is equal or higher to the threshold, then we choose that biome
-    Biome oddsThresholds[biomeRowSize];
-    double threshold = 1;
-    for(int i = 0; i < biomeRowSize; i++) {
-        Biome* biome = biomeRow[i];
-        threshold -= biome->odds;
-        Biome oddsThreshold = { biome->type, threshold };
-        oddsThresholds[i] = oddsThreshold;
-    }
+    BiomeThreshold* oddsThresholds = calculateOddsThresholds(biomeRow, biomeRowSize);
 
 
     // To calculate the blend, we will check the biome type at each 27 directions in 3D space from our sampled point.
@@ -76,13 +150,7 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
     // Mesas need sharp biome blending, but swamps need smoother biome blending e.g.
     float biomeNoise = fabsf(fnlGetNoise3D(&biomeNoiseGenerator, noiseLoc.x, noiseLoc.y, noiseLoc.z));
 
-    Biome centralBiome = oddsThresholds[0];
-    for(int i = 1; i < biomeRowSize; i++) {
-        Biome oddsThreshold = oddsThresholds[i];
-        if(biomeNoise >= oddsThreshold.odds && biomeNoise < centralBiome.odds) {
-            centralBiome = oddsThreshold;
-        }
-    }
+    Biome* centralBiome = recursivelyFindBiome(oddsThresholds, biomeRowSize, biomeNoise);
 
     double blendDistance = 0.00004;
 
@@ -115,16 +183,10 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
 
                 // Find what biome fits this sampled point based on the odds in the oddsThresholds array
                 // Initial value will be first value in the array !!! THIS MEANS THAT NO ARRAY MAY BE LEFT EMPTY !!! (duh)
-                Biome biomeOfChoice = oddsThresholds[0];
-                for(int i = 1; i < biomeRowSize; i++) {
-                    Biome oddsThreshold = oddsThresholds[i];
-                    // If the noise (random value) is larger than the odds (threshold), and the current biomeOfChoice is not (can happen if the initial value is invalid) 
-                    if(biomeNoise >= oddsThreshold.odds && biomeNoise < biomeOfChoice.odds) {
-                        biomeOfChoice = oddsThreshold;
-                    }
-                }
 
-                BiomeBlend biomeBlend = { biomeOfChoice.type, blendingNoise };
+                Biome* biomeOfChoice = recursivelyFindBiome(oddsThresholds, biomeRowSize, biomeNoise);
+
+                BiomeBlend biomeBlend = { 0, blendingNoise, biomeOfChoice };
                 
                 int index = biomeBlendIndex++;
                 biomeBlends[index] = biomeBlend;
@@ -132,7 +194,9 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
         }
     }
 
+    free(oddsThresholds);
 
+    Biome* biomeStructs[BIOME_TYPE_COUNT];
     //Array of weights for each biome, indexed by biome height value (fjords = 1, swamp = 4, etc. Check header file)
     double biomeWeights[BIOME_TYPE_COUNT];
     // Array keeping count of how many times we saw a particular biome, again indexed the same way
@@ -150,12 +214,13 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
     for(int i = 0; i < 27; i++) {
         BiomeBlend biomeBlend = biomeBlends[i];
 
-        double biomeWeight = biomeWeights[(int)biomeBlend.biome];
-        int biomeWeightCount = biomeWeightCounts[(int)biomeBlend.biome];
+        double biomeWeight = biomeWeights[(int)biomeBlend.biome->type];
+        int biomeWeightCount = biomeWeightCounts[(int)biomeBlend.biome->type];
 
         totalBiomeWeights += biomeBlend.blend;
-        biomeWeights[(int)biomeBlend.biome] = biomeWeight + biomeBlend.blend;
-        biomeWeightCounts[(int)biomeBlend.biome] = biomeWeightCount + 1;
+        biomeStructs[(int)biomeBlend.biome->type] = biomeBlend.biome;
+        biomeWeights[(int)biomeBlend.biome->type] = biomeWeight + biomeBlend.blend;
+        biomeWeightCounts[(int)biomeBlend.biome->type] = biomeWeightCount + 1;
     }
 
     // Get how many biomes were actually found
@@ -172,7 +237,12 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
     BiomeBlend *biomes = malloc(sizeof(BiomeBlend) * (biomeSize+1));
 
     // A dirty hack to provide the length is to add the length as first element in the array, abusing BiomeBlend but oh well
-    BiomeBlend length = { biomeSize, 0 };
+    BiomeBlend length = { biomeSize, 0, &UnsetBiome };
+    // BiomeBlend length = {
+    //     .count = biomeSize,
+    //     .blend = 0,
+    //     .biome = Unset,//&UnsetBiome,
+    // };
     biomes[0] = length;
 
     // Fill the biomes array with biome + blend
@@ -182,11 +252,18 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
         int biomeWeightCount = biomeWeightCounts[i];
 
         if(biomeWeightCount != 0) {
-            int index = i == centralBiome.type ? 1 : biomeIndex++;
+            Biome* biomeStruct = biomeStructs[i];
+            
+            int index = i == centralBiome->type ? 1 : biomeIndex++;
             // The weight of the biome / the total of all weights gives us a percentage of how influencial this biome is to the sampled point
             // If there is only one biome, the weight is 1 by definition
             double weight = biomeWeight / totalBiomeWeights;
-            BiomeBlend biome = { i, weight };
+            BiomeBlend biome = { 0, weight, biomeStruct };
+            // BiomeBlend biome = {
+            //     .count = 0,
+            //     .blend = weight,
+            //     .biome = (enum BiomeType)i,//biomeStruct,
+            // };
             biomes[index] = biome;
         }
     }

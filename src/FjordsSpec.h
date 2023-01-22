@@ -3,12 +3,6 @@
 
 #include "customBiomes.h"
 
-static Biome FjordsBiome = {
-    .type = Fjords,
-    .odds = 0.375,
-    .subBiomes = {},
-};
-
 
 static TerrainBaseTypeOdds fjordsLimestone = {
     .terrainBaseTypeIndex = "limestone",
@@ -201,7 +195,7 @@ static TerrainBaseTypeOdds* fjordsTerrainBaseTypeOdds[] = {
     &fjordsPoorDirt,
     &fjordsDirt,
 };
-static BiomeTerrainBaseDistribution fjordsTerrainDistribution = {
+static TerrainBaseDistribution fjordsTerrainDistribution = {
     Fjords,
     9,
     fjordsTerrainBaseTypeOdds,
@@ -344,6 +338,27 @@ static FloraDistribution fjordsFloraDistribution = {
     Fjords,
     21,
     fjordsFloraOdds
+};
+
+double getFjordsHeight(
+    SPVec4 previousHeight,
+    SPNoise* noise1,
+    SPNoise* noise2,
+    SPVec3 pointNormal,
+    SPVec3 noiseLoc,
+    SPWorldGenOptions worldGenOptions,
+    double riverValue,
+    double riverDistance
+);
+
+static Biome FjordsBiome = {
+    .type = Fjords,
+    .odds = 0.375,
+    .terrainBaseDistribution = &fjordsTerrainDistribution,
+    .floraDistribution = &fjordsFloraDistribution,
+    .getHeight = getFjordsHeight,
+    .subBiomesSize = 0,
+    .subBiomes = {},
 };
 
 #endif
