@@ -1,5 +1,3 @@
-(Please note that this mod is very alpha, and may break your world now, or in future updates)
-
 Adds new terrain variations and biomes to the vanilla game.
 
 This mod changes 50% of all the vanilla terrain with custom biomes, including:
@@ -12,6 +10,6 @@ It also changes the surface type generation specific to the biome (spawning of c
 This mod is still very alpha and has a lot of rough edges that I still need to polish. Things I am aware of:
 - Awful biome blending: cliffs up to 2km generating, random pits, etc.
 
-If you encounter any issues, please let me know on the modding Discord: https://discord.gg/WnN8hj2Fyg
+If you encounter any issues, or have an idea for a new biome you want to share, please let me know on the modding Discord: https://discord.gg/WnN8hj2Fyg
 
 If you're interested in the code, it's open-sourced at: https://github.com/nmattela/sapiens_terrain_variations

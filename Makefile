@@ -2,9 +2,10 @@ CMAKE_BINARY := x86_64-w64-mingw32-cmake
 BUILD_DIRECTORY := ${PWD}/build
 MOD_DIRECTORY := /mnt/LinuxHDD/SteamLibrary/steamapps/compatdata/1060230/pfx/drive_c/users/steamuser/AppData/Roaming/majicjungle/sapiens/mods
 MOD_ID := sapiens_terrain_variations
+MOD_DESCRIPTION := $(shell sed -z 's/\n/\\n/g' README.md)
 
 init:
-	${CMAKE_BINARY} -DMOD_ID=${MOD_ID} -DMOD_NAME="Terrain Variations" -DDESCRIPTION="Adds new terrain variations and biomes (WIP) to the vanilla game" -DDEVELOPER="nmattela" -DDEVELOPER_URL="https://github.com/nmattela/sapiens_terrain_variations" -DPREVIEW_FILE="preview.png" -DMOD_MAJOR_VERSION=1 -DMOD_MINOR_VERSION=0 -DMOD_PATCH_VERSION=1 . -B build
+	${CMAKE_BINARY} -DMOD_ID=${MOD_ID} -DMOD_NAME="Terrain Variations" -DDESCRIPTION="${MOD_DESCRIPTION}" -DDEVELOPER="nmattela" -DDEVELOPER_URL="https://github.com/nmattela/sapiens_terrain_variations" -DPREVIEW_FILE="preview.png" -DMOD_MAJOR_VERSION=1 -DMOD_MINOR_VERSION=0 -DMOD_PATCH_VERSION=1 . -B build
 	cmake --build build/
 	- rm ${MOD_DIRECTORY}/${MOD_ID}
 	ln -s ${BUILD_DIRECTORY}/${MOD_ID}/ ${MOD_DIRECTORY}/${MOD_ID}
