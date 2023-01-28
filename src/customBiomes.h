@@ -15,9 +15,10 @@ enum BiomeType {
     DesertOasis,
     Hillsides,
     MonumentValley,
+    Andaman,
 };
 
-#define BIOME_TYPE_COUNT 7
+#define BIOME_TYPE_COUNT 9
 
 enum Size { XS, S, M, L, XL };
 
@@ -107,6 +108,7 @@ typedef struct FloraDistribution {
 struct Biome;
 typedef struct Biome {
     enum BiomeType type;
+    char* tag;
     double odds;
     struct TerrainBaseDistribution* terrainBaseDistribution;
     struct FloraDistribution* floraDistribution;
@@ -132,6 +134,7 @@ typedef struct BiomeThreshold {
 
 static Biome StopBiome = {
     .type = Unset,
+    .tag = "unset",
     .odds = -1,
     .subBiomesSize = 0,
     .subBiomes = {},
@@ -209,8 +212,9 @@ static char* grassVariations[GRASS_VARIATIONS_COUNT] = {
 #include "SwampSpec.h"
 #include "DesertOasisSpec.h"
 #include "HillsidesSpec.h"
+#include "AndamanSpec.h"
 
-#define MATRIX_ROWS 3
+#define MATRIX_ROWS 4
 // static Biome** biomeMatrix[MATRIX_ROWS] = {
 //     /* ^ equator */ (Biome*[]){ &MesaBiome  , &DesertOasisBiome,                  &UnsetBiome, &StopBiome },
 //     /* |         */ (Biome*[]){ &PlainsBiome, &MesaBiomeFewer  , &HillsidesBiome, &UnsetBiome, &StopBiome },

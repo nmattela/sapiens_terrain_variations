@@ -1,6 +1,6 @@
-#include "PlainsSpec.h"
+#include "customBiomes.h"
 
-double getPlainsHeight(
+double getAndamanHeight(
     SPVec4 previousHeight,
     SPNoise* noise1,
     SPNoise* noise2,
@@ -8,16 +8,17 @@ double getPlainsHeight(
     SPVec3 noiseLoc,
     SPWorldGenOptions worldGenOptions,
     double riverValue,
-    double riverDistance) {
-
+    double riverDistance
+) {
+    
     double previous = SP_PRERENDER_TO_METERS(previousHeight.x);
 
-    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 2000), 1);
-    height *= 1000;
-    height = fabs(height);
+    double height = spNoiseGet(noise1, spVec3Mul(noiseLoc, 6000.0), 6);
+    height *= 500;
+    height += 250;
 
-    if(riverDistance < 0.01 && previous >= -10) {
-        height = rangeMap(0, 0.01, spMax(previous, -50.0), height, riverDistance);
+    if(riverDistance < 0.001 && previous >= -20) {
+        height = rangeMap(0, 0.001, spMax(previous, -50.0), height, riverDistance);
     } else if(previous < 0) {
         height = smootheTowardsOcean(height, previous);
     }

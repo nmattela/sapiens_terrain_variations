@@ -303,7 +303,8 @@ double getHillsidesHeight(
 
 static Biome HillsidesBiome = {
     .type = Hillsides,
-    .odds = 0.2,
+    .tag = "hillsides",
+    .odds = 0.25,
     .terrainBaseDistribution = &hillsidesTerrainDistribution,
     .floraDistribution = &hillsidesFloraDistribution,
     .getHeight = &getHillsidesHeight,

@@ -459,6 +459,7 @@ double getMonumentValleyHeight(
 
 static Biome MonumentValleyBiome = {
     .type = MonumentValley,
+    .tag = "monumentValley",
     .odds = 0.5,
     .terrainBaseDistribution = &mesaTerrainDistribution,
     .floraDistribution = &mesaFloraDistribution,
@@ -469,6 +470,7 @@ static Biome MonumentValleyBiome = {
 
 static Biome MesaBiome = {
     .type = Mesa,
+    .tag = "mesa",
     .odds = 0.125,
     .terrainBaseDistribution = &mesaTerrainDistribution,
     .floraDistribution = &mesaFloraDistribution,
@@ -480,6 +482,7 @@ static Biome MesaBiome = {
 
 static Biome MesaBiomeFewer = {
     .type = Mesa,
+    .tag = "mesa",
     .odds = 0.125,
     .terrainBaseDistribution = &mesaTerrainDistribution,
     .floraDistribution = &mesaFloraDistribution,

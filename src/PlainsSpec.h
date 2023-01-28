@@ -385,6 +385,7 @@ double getPlainsHeight(
 
 static Biome PlainsBiome = {
     .type = Plains,
+    .tag = "plains",
     .odds = 0.25,
     .terrainBaseDistribution = &plainsTerrainDistribution,
     .floraDistribution = &plainsFloraDistribution,

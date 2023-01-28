@@ -8,99 +8,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// void spBiomeInit(SPBiomeThreadState* threadState) {
-
-//     // for(int r = 0; r < 256; r++) {
-//     //     for(int g = 0; g < 256; g++) {
-//     //         for(int b = 0; b < 0; b++) {
-//     //             char* str;
-//     //             asprintf(&str, "debug_%d_%d_%d", r, g, b);
-//     //             threadState->getTerrainBaseTypeIndex(threadState, str);
-//     //             threadState->getTerrainVariation(threadState, str);
-//     //         }
-//     //     }
-//     // }
-
-//     for(int i = 0; i < 256; i++) {
-//         char* strRed;
-//         asprintf(&strRed, "debug_%d_0_0", i);
-//         threadState->getTerrainBaseTypeIndex(threadState, strRed);
-//         threadState->getTerrainVariation(threadState, strRed);
-
-//         char* strGreen;
-//         asprintf(&strGreen, "debug_0_%d_0", i);
-//         threadState->getTerrainBaseTypeIndex(threadState, strGreen);
-//         threadState->getTerrainVariation(threadState, strGreen);
-
-//         char* strBlue;
-//         asprintf(&strBlue, "debug_0_0_%d", i);
-//         threadState->getTerrainBaseTypeIndex(threadState, strBlue);
-//         threadState->getTerrainVariation(threadState, strBlue);
-
-//         free(strRed);
-//         free(strGreen);
-//         free(strBlue);
-//     }
-// }
-
-// SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
-//     SPBiomeThreadState* threadState,
-//     SPSurfaceTypeResult incomingType,
-//     uint16_t* tags,
-//     int tagCount,
-//     uint32_t* modifications,
-//     int modificationCount,
-//     uint32_t fillGameObjectTypeIndex,
-//     // (-Infinity, +Infinity)
-//     int16_t digFillOffset,
-//     uint32_t* variations,
-//     SPVec3 pointNormal, 
-//     SPVec3 noiseLoc, 
-//     // (-0.001, 0.001)
-//     double baseAltitude,
-//     // (0, 2(+))
-//     double steepness,
-//     // (0, +Infinity)
-//     double riverDistance,
-//     int seasonIndex
-// ) {
-
-//     SPSurfaceTypeResult result = incomingType;
-
-//     //Steepness is the difference between a sampled value 4 meters to the north and a sampled value 4 meters to the east. Using triangulation, we can get the angle
-//     double angle = isnan(steepness) ? 0 : atan(steepness / sqrt(32));
-//     double steepnessRange = rangeMap(0, 1.5707963268, 0, 1, angle);
-
-//     long steepnessColor = roundl(rangeMap(0, 1, 0, 255, steepnessRange));
-//     char* steepnessString;
-//     asprintf(&steepnessString, "debug_%ld_0_0", steepnessColor);
-
-//     //baseAltitude varies, and there is no "absolute minimum" or "absolute maximum", but running some tests it seems to fall between -0.001 and 0.001.
-//     //Negative values are below sea level.
-//     //1/255th is about 17 meters, putting the "highest" altitude to 4335 (if you see 0.001 as the maximum)
-//     //1 meter in altitude is therefore 0.00000023 units in baseAltitude
-//     long baseAltitudeColor = roundl(rangeMap(0, 0.001, 0, 255, baseAltitude));
-//     char* baseAltitudeString;
-//     asprintf(&baseAltitudeString, "debug_0_%ld_0", baseAltitudeColor);
-
-//     //riverDistance of 1 is roughly 7650 hexagons removed from the nearest river
-//     long riverDistanceColor = roundl(rangeMap(0, 1, 0, 255, riverDistance));
-//     char* riverDistanceString;
-//     asprintf(&riverDistanceString, "debug_0_0_%ld", riverDistanceColor);
-
-//     result.surfaceBaseType = threadState->getTerrainBaseTypeIndex(threadState, riverDistanceString);
-    
-//     SPSurfaceTypeDefault defaults = threadState->getSurfaceDefaultsForBaseType(threadState, result.surfaceBaseType);
-//     result.materialIndex = defaults.materialIndex;
-//     result.decalTypeIndex = defaults.decalGroupIndex;
-//     result.pathDifficultyIndex = defaults.pathDifficultyIndex;
-
-//     free(steepnessString);
-//     free(baseAltitudeString);
-//     free(riverDistanceString);
-
-//     return result;
-// }
+void spBiomeInit(SPBiomeThreadState* threadState) {
+	uint16_t biomeTag_fjords = threadState->getBiomeTag(threadState, "fjords");
+	uint16_t biomeTag_mesa = threadState->getBiomeTag(threadState, "mesa");
+	uint16_t biomeTag_plains = threadState->getBiomeTag(threadState, "plains");
+	uint16_t biomeTag_swamp = threadState->getBiomeTag(threadState, "swamp");
+	uint16_t biomeTag_desertOasis = threadState->getBiomeTag(threadState, "desertOasis");
+	uint16_t biomeTag_hillsides = threadState->getBiomeTag(threadState, "hillsides");
+	uint16_t biomeTag_monumentValley = threadState->getBiomeTag(threadState, "monumentValley");
+}
 
 typedef struct SurfaceTypeInfo {
 	bool river;
@@ -223,7 +139,7 @@ static const double DEEP_SEA_LEVEL = SP_METERS_TO_PRERENDER(-1.1);
 SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
     SPBiomeThreadState* threadState,
     SPSurfaceTypeResult incomingType,
-    uint16_t* tags,
+    uint16_t* tags, //<-- the biomeTag!!!
     int tagCount,
     uint32_t* modifications,
     int modificationCount,
@@ -251,7 +167,6 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 
 	uint32_t terrainVariation_shallowWater							= threadState->getTerrainVariation(threadState, "shallowWater");
 	uint32_t terrainVariation_deepWater								= threadState->getTerrainVariation(threadState, "deepWater");
-
 
 	//Steepness is the difference between a sampled value 4 meters to the north and a sampled value 4 meters to the east. Using triangulation, we can get the angle
     double angle = isnan(steepness) ? 0 : atan(steepness / sqrt(32));
@@ -592,4 +507,35 @@ int spBiomeGetTransientGameObjectTypesForFaceSubdivision(
 	free(biomeBlendArray);
 
     return addedCount;
+}
+
+
+void spBiomeGetTagsForPoint(
+	SPBiomeThreadState* threadState,
+	uint16_t* tagsOut,
+	int* tagCountOut,
+	SPVec3 pointNormal,
+	SPVec3 noiseLoc,
+	double altitude,
+	double steepness,
+	double riverDistance,
+	double temperatureSummer,
+	double temperatureWinter,
+	double rainfallSummer,
+	double rainfallWinter
+) {
+
+	BiomeBlend* biomeBlendArray = getBiomeForPoint(noiseLoc);
+
+    int biomeBlendArraySize = biomeBlendArray[0].count;
+
+    BiomeBlend biome = biomeBlendArray[1];
+
+	if(biome.biome->type != Unset) {
+		int tagCount = *tagCountOut;
+
+		tagsOut[0] = threadState->getBiomeTag(threadState, biome.biome->tag);
+
+		*tagCountOut = 1;
+	}
 }

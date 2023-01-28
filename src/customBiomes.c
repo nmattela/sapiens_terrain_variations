@@ -43,9 +43,7 @@ Biome* recursivelyFindBiome(BiomeThreshold* oddsThresholds, int oddsThresholdsSi
 
         double newNoise = rangeMap(oddsFrom, oddsTo, 0, 1, biomeNoise);
 
-        spLog("THIS GETS CALLED");
         BiomeThreshold* newOddsThresholds = calculateOddsThresholds(biomeOfChoice.biome->subBiomes, biomeOfChoice.biome->subBiomesSize);
-        spLog("END THIS GETS CALLED");
 
         Biome* recurseResult = recursivelyFindBiome(newOddsThresholds, biomeOfChoice.biome->subBiomesSize, newNoise);
 
@@ -66,14 +64,16 @@ Biome** biomeMatrix[MATRIX_ROWS];
 bool isInitialized = false;
 void customBiomesInit() {
 
-	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome  , &DesertOasisBiome,                  &UnsetBiome, &StopBiome };
-	/* |         */ static Biome* latitude2[] = { &PlainsBiome, &MesaBiomeFewer  , &HillsidesBiome, &UnsetBiome, &StopBiome };
-	/* v poles   */ static Biome* latitude3[] = { &FjordsBiome, &SwampBiome      ,                  &UnsetBiome, &StopBiome };
+	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome     , &DesertOasisBiome,                &UnsetBiome, &StopBiome };
+    /* |         */ static Biome* latitude2[] = { &MesaBiomeFewer, &PlainsBiome     , &AndamanBiome, &UnsetBiome, &StopBiome };
+	/* |         */ static Biome* latitude3[] = { &PlainsBiome   , &HillsidesBiome  ,                &UnsetBiome, &StopBiome };
+	/* v poles   */ static Biome* latitude4[] = { &FjordsBiome   , &SwampBiome      ,                &UnsetBiome, &StopBiome };
 
     static Biome** latitudes[MATRIX_ROWS] = {
         latitude1,
         latitude2,
-        latitude3
+        latitude3,
+        latitude4,
     };
 
     memcpy(biomeMatrix, latitudes, sizeof(latitudes));
@@ -103,15 +103,15 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
 
     // // DEBUG
     // BiomeBlend* debug = malloc(sizeof(BiomeBlend)*2);
-    // debug[0] = (BiomeBlend){ 1, 0 };
-    // debug[1] = (BiomeBlend){ Mesa, 1 };
+    // debug[0] = (BiomeBlend){ 1, 0, &UnsetBiome };
+    // debug[1] = (BiomeBlend){ 0, 1, &AndamanBiome };
     // return debug;
     // // DEBUG
 
     // We do not use the vanilla perlin noise. Instead we use a verenoi noise provided to us by the FastNoiseLite library to generate our biomes
     fnl_state biomeNoiseGenerator = fnlCreateState();
     biomeNoiseGenerator.noise_type = FNL_NOISE_CELLULAR;
-    biomeNoiseGenerator.frequency = 700;
+    biomeNoiseGenerator.frequency = 500;
     biomeNoiseGenerator.octaves = 6;
     biomeNoiseGenerator.cellular_return_type = FNL_CELLULAR_RETURN_VALUE_CELLVALUE;
     biomeNoiseGenerator.cellular_distance_func = FNL_CELLULAR_DISTANCE_HYBRID;
@@ -119,7 +119,7 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
     // We instantiate another verenoi noise, but this one will be used to calculate the biome blend (it returns a value close to 0 if it is close to a biome edge, and close to 1 if it is in the center of a biome)
     fnl_state blendingNoiseGenerator = fnlCreateState();
     blendingNoiseGenerator.noise_type = FNL_NOISE_CELLULAR;
-    blendingNoiseGenerator.frequency = 700;
+    blendingNoiseGenerator.frequency = 500;
     blendingNoiseGenerator.octaves = 6;
     blendingNoiseGenerator.cellular_return_type = FNL_CELLULAR_RETURN_VALUE_DISTANCE2DIV;
     blendingNoiseGenerator.cellular_distance_func = FNL_CELLULAR_DISTANCE_HYBRID;
@@ -152,7 +152,7 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
 
     Biome* centralBiome = recursivelyFindBiome(oddsThresholds, biomeRowSize, biomeNoise);
 
-    double blendDistance = 0.00004;
+    double blendDistance = 0.00008;
 
 
 
@@ -238,11 +238,6 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
 
     // A dirty hack to provide the length is to add the length as first element in the array, abusing BiomeBlend but oh well
     BiomeBlend length = { biomeSize, 0, &UnsetBiome };
-    // BiomeBlend length = {
-    //     .count = biomeSize,
-    //     .blend = 0,
-    //     .biome = Unset,//&UnsetBiome,
-    // };
     biomes[0] = length;
 
     // Fill the biomes array with biome + blend
@@ -259,11 +254,6 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
             // If there is only one biome, the weight is 1 by definition
             double weight = biomeWeight / totalBiomeWeights;
             BiomeBlend biome = { 0, weight, biomeStruct };
-            // BiomeBlend biome = {
-            //     .count = 0,
-            //     .blend = weight,
-            //     .biome = (enum BiomeType)i,//biomeStruct,
-            // };
             biomes[index] = biome;
         }
     }

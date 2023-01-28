@@ -266,6 +266,7 @@ double getSwampHeight(
 
 static Biome SwampBiome = {
     .type = Swamp,
+    .tag = "swamp",
     .odds = 0.125,
     .terrainBaseDistribution = &swampTerrainDistribution,
     .floraDistribution = &swampFloraDistribution,

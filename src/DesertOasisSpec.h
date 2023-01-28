@@ -345,6 +345,7 @@ double getDesertOasisHeight(
 
 static Biome DesertOasisBiome = {
     .type = DesertOasis,
+    .tag = "desertOasis",
     .odds = 0.375,
     .terrainBaseDistribution = &desertOasisTerrainDistribution,
     .floraDistribution = &desertOasisFloraDistribution,

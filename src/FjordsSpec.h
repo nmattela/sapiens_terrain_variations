@@ -353,6 +353,7 @@ double getFjordsHeight(
 
 static Biome FjordsBiome = {
     .type = Fjords,
+    .tag = "fjords",
     .odds = 0.375,
     .terrainBaseDistribution = &fjordsTerrainDistribution,
     .floraDistribution = &fjordsFloraDistribution,
