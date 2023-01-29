@@ -28,7 +28,6 @@ add_library(${MOD_ID} SHARED
     src/debug.c
     src/customBiomes.c
     src/customBiomes.h
-    src/customBiomesDefinitions.h
     src/customBiomesDefaults.h
     src/UnsetSpec.h
     src/FjordsSpec.h
