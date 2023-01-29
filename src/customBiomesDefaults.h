@@ -167,21 +167,9 @@ static TerrainBaseTypeOdds richDirtDefault = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrass",
-        // "temperateGrassPlentiful",
-        // "temperateGrassWinter",
-        // "taigaGrass",
-        // "mediterraneanGrass",
-        // "mediterraneanGrassPlentiful",
-        // "steppeGrass",
-        // "tropicalRainforestGrass",
-        // "tropicalRainforestGrassPlentiful",
-        // "savannaGrass",
-        // "tundraGrass",
     }
 };
 
@@ -205,21 +193,9 @@ static TerrainBaseTypeOdds poorDirtDefault = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrass",
-        // "temperateGrassPlentiful",
-        // "temperateGrassWinter",
-        // "taigaGrass",
-        // "mediterraneanGrass",
-        // "mediterraneanGrassPlentiful",
-        // "steppeGrass",
-        // "tropicalRainforestGrass",
-        // "tropicalRainforestGrassPlentiful",
-        // "savannaGrass",
-        // "tundraGrass",
     }
 };
 
@@ -243,21 +219,9 @@ static TerrainBaseTypeOdds dirtDefault = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrass",
-        // "temperateGrassPlentiful",
-        // "temperateGrassWinter",
-        // "taigaGrass",
-        // "mediterraneanGrass",
-        // "mediterraneanGrassPlentiful",
-        // "steppeGrass",
-        // "tropicalRainforestGrass",
-        // "tropicalRainforestGrassPlentiful",
-        // "savannaGrass",
-        // "tundraGrass",
     }
 };
 

@@ -120,10 +120,8 @@ static TerrainBaseTypeOdds fjordsRichDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrassPlentiful",
     }
 };
@@ -148,10 +146,8 @@ static TerrainBaseTypeOdds fjordsPoorDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "savannaGrass",
     }
 };
@@ -176,10 +172,8 @@ static TerrainBaseTypeOdds fjordsDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrass",
     }
 };

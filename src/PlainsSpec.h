@@ -95,10 +95,8 @@ static TerrainBaseTypeOdds plainsRichDirt = {
     .digFillOffsetTo = 0.0001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrassPlentiful",
     }
 };
@@ -123,10 +121,8 @@ static TerrainBaseTypeOdds plainsPoorDirt = {
     .digFillOffsetTo = 0.0001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "mediterraneanGrassPlentiful",
     }
 };
@@ -151,10 +147,8 @@ static TerrainBaseTypeOdds plainsDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrass",
     }
 };

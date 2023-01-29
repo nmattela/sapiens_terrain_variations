@@ -120,10 +120,8 @@ static TerrainBaseTypeOdds swampRichDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "tropicalRainforestGrassPlentiful",
     }
 };
@@ -148,10 +146,8 @@ static TerrainBaseTypeOdds swampDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "tropicalRainforestGrass",
     }
 };

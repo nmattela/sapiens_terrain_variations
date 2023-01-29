@@ -64,10 +64,10 @@ Biome** biomeMatrix[MATRIX_ROWS];
 bool isInitialized = false;
 void customBiomesInit() {
 
-	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome     , &DesertOasisBiome,                &UnsetBiome, &StopBiome };
+	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome     , &DesertOasisBiome,                &UnsetBiome     , &StopBiome };
     /* |         */ static Biome* latitude2[] = { &MesaBiomeFewer, &PlainsBiome     , &AndamanBiome, &UnsetBiomeFewer, &StopBiome };
 	/* |         */ static Biome* latitude3[] = { &PlainsBiome   , &HillsidesBiome  , &AlpsBiome   , &UnsetBiomeFewer, &StopBiome };
-	/* v poles   */ static Biome* latitude4[] = { &FjordsBiome   , &SwampBiome      ,                &UnsetBiome, &StopBiome };
+	/* v poles   */ static Biome* latitude4[] = { &FjordsBiome   , &SwampBiome      ,                &UnsetBiome     , &StopBiome };
 
     static Biome** latitudes[MATRIX_ROWS] = {
         latitude1,

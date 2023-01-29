@@ -23,10 +23,8 @@ static TerrainBaseTypeOdds andamanRichDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "temperateGrassPlentiful",
     }
 };

@@ -143,10 +143,8 @@ static TerrainBaseTypeOdds mesaRichDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 3,
+    .variationCount = 1,
     .variations = {
-        "snow",
-        "grassSnow",
         "savannaGrass",
     }
 };
@@ -171,10 +169,8 @@ static TerrainBaseTypeOdds mesaPoorDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 2,
+    .variationCount = 0,
     .variations = {
-        "snow",
-        "grassSnow",
     }
 };
 
@@ -198,10 +194,8 @@ static TerrainBaseTypeOdds mesaDirt = {
     .digFillOffsetTo = 0.00001,
     .minDigFillOffset = -0.2,
     .maxDigFillOffset = -INFINITY,
-    .variationCount = 2,
+    .variationCount = 0,
     .variations = {
-        "snow",
-        "grassSnow",
     }
 };
 
