@@ -2,7 +2,7 @@ Adds new terrain variations and biomes to the vanilla game.
 
 This mod changes 50% of all the vanilla terrain with custom biomes, including:
 - Fjords and swamps near the poles
-- Plains and hillsides between poles and equator
+- Plains, hillsides, and Andaman and Alps-inspired biomes between poles and equator
 - Desert oasis and mesa near the equator
 
 It also changes the surface type generation specific to the biome (spawning of clay, rock, etc.), as well as flora generation (trees, bushes, boulders and carcasses).

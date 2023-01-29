@@ -347,7 +347,7 @@ double getAlpsHeight(
 static Biome AlpsBiome = {
     .type = Alps,
     .tag = "alps",
-    .odds = 0.375,
+    .odds = 0.25,
     .terrainBaseDistribution = &alpsTerrainDistribution,
     .floraDistribution = &alpsFloraDistribution,
     .getHeight = getAlpsHeight,

@@ -65,8 +65,8 @@ bool isInitialized = false;
 void customBiomesInit() {
 
 	/* ^ equator */ static Biome* latitude1[] = { &MesaBiome     , &DesertOasisBiome,                &UnsetBiome, &StopBiome };
-    /* |         */ static Biome* latitude2[] = { &MesaBiomeFewer, &PlainsBiome     , &AndamanBiome, &UnsetBiome, &StopBiome };
-	/* |         */ static Biome* latitude3[] = { &PlainsBiome   , &HillsidesBiome  ,                &UnsetBiome, &StopBiome };
+    /* |         */ static Biome* latitude2[] = { &MesaBiomeFewer, &PlainsBiome     , &AndamanBiome, &UnsetBiomeFewer, &StopBiome };
+	/* |         */ static Biome* latitude3[] = { &PlainsBiome   , &HillsidesBiome  , &AlpsBiome   , &UnsetBiomeFewer, &StopBiome };
 	/* v poles   */ static Biome* latitude4[] = { &FjordsBiome   , &SwampBiome      ,                &UnsetBiome, &StopBiome };
 
     static Biome** latitudes[MATRIX_ROWS] = {
@@ -101,12 +101,12 @@ BiomeBlend* getBiomeForPoint(SPVec3 noiseLoc) {
         customBiomesInit();
     }
 
-    // DEBUG
-    BiomeBlend* debug = malloc(sizeof(BiomeBlend)*2);
-    debug[0] = (BiomeBlend){ 1, 0, &UnsetBiome };
-    debug[1] = (BiomeBlend){ 0, 1, &AlpsBiome };
-    return debug;
-    // DEBUG
+    // // DEBUG
+    // BiomeBlend* debug = malloc(sizeof(BiomeBlend)*2);
+    // debug[0] = (BiomeBlend){ 1, 0, &UnsetBiome };
+    // debug[1] = (BiomeBlend){ 0, 1, &AlpsBiome };
+    // return debug;
+    // // DEBUG
 
     // We do not use the vanilla perlin noise. Instead we use a verenoi noise provided to us by the FastNoiseLite library to generate our biomes
     fnl_state biomeNoiseGenerator = fnlCreateState();
