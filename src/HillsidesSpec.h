@@ -238,7 +238,7 @@ static TerrainBaseDistribution hillsidesTerrainDistribution = {
 
 static FloraOdds hillsidesForest = {
     .indexCount= 11,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "birch1",
         "aspen1",
         "appleTree",

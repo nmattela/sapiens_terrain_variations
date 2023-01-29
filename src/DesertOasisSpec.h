@@ -237,7 +237,7 @@ static TerrainBaseDistribution desertOasisTerrainDistribution = {
 
 static FloraOdds desertOasisBananaTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bananaTree"
     },
     .level = 19,
@@ -263,7 +263,7 @@ static FloraOdds desertOasisBananaTree = {
 
 static FloraOdds desertOasisCoconutTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "coconutTree"
     },
     .level = 18,
@@ -289,7 +289,7 @@ static FloraOdds desertOasisCoconutTree = {
 
 static FloraOdds desertOasisBone = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bone",
     },
     .level = 19,

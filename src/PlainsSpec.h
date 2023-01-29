@@ -181,7 +181,7 @@ static TerrainBaseDistribution plainsTerrainDistribution = {
 
 static FloraOdds plainsAppleTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "appleTree",
     },
     .level = 18,
@@ -207,7 +207,7 @@ static FloraOdds plainsAppleTree = {
 
 static FloraOdds plainsOrangeTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "orangeTree",
     },
     .level = 18,
@@ -233,7 +233,7 @@ static FloraOdds plainsOrangeTree = {
 
 static FloraOdds plainsPeachTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "peachTree",
     },
     .level = 18,
@@ -259,7 +259,7 @@ static FloraOdds plainsPeachTree = {
 
 static FloraOdds plainsElderBerryTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "elderberryTree",
     },
     .level = 18,
@@ -285,7 +285,7 @@ static FloraOdds plainsElderBerryTree = {
 
 static FloraOdds plainsForest = {
     .indexCount= 11,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "birch1",
         "aspen1",
         "appleTree",
@@ -321,7 +321,7 @@ static FloraOdds plainsForest = {
 
 static FloraOdds plainsSunflower = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "sunflower"
     },
     .level = 19,

@@ -9,6 +9,8 @@
         "stdint.h": "c",
         "spnoise.h": "c",
         "fjordsspec.h": "c",
-        "mesaspec.h": "c"
+        "mesaspec.h": "c",
+        "custombiomesdefinitions.h": "c",
+        "custombiomes.h": "c"
     }
 }

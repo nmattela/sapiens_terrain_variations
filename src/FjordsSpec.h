@@ -204,7 +204,7 @@ static TerrainBaseDistribution fjordsTerrainDistribution = {
 
 static FloraOdds fjordsWheatPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "wheatPlant",
     },
     .level = 19,
@@ -230,7 +230,7 @@ static FloraOdds fjordsWheatPlant = {
 
 static FloraOdds fjordsFlaxPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "flaxPlant",
     },
     .level = 19,
@@ -256,7 +256,7 @@ static FloraOdds fjordsFlaxPlant = {
 
 static FloraOdds fjordsAspen = {
     .indexCount= 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "aspen1",
         "aspen2",
         "aspen3"
@@ -284,7 +284,7 @@ static FloraOdds fjordsAspen = {
 
 static FloraOdds fjordsPine = {
     .indexCount= 4,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "pine1",
         "pine2",
         "pine3",

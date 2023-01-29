@@ -227,7 +227,7 @@ static TerrainBaseDistribution mesaTerrainDistribution = {
 
 static FloraOdds mesaRockPebble = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "rock",
         "rockSmall",
         "rockLarge",
@@ -255,7 +255,7 @@ static FloraOdds mesaRockPebble = {
 
 static FloraOdds mesaRedRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "redRock",
         "redRockSmall",
         "redRockLarge",
@@ -283,7 +283,7 @@ static FloraOdds mesaRedRock = {
 
 static FloraOdds mesaGreenRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "greenRock",
         "greenRockSmall",
         "greenRockLarge",
@@ -311,7 +311,7 @@ static FloraOdds mesaGreenRock = {
 
 static FloraOdds mesaLimestoneRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "limestoneRock",
         "limestoneRockSmall",
         "limestoneRockLarge",
@@ -339,7 +339,7 @@ static FloraOdds mesaLimestoneRock = {
 
 static FloraOdds mesaFlint = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "flint",
     },
     .level = 20,
@@ -365,7 +365,7 @@ static FloraOdds mesaFlint = {
 
 static FloraOdds mesaClayBall = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "clay",
     },
     .level = 19,
@@ -391,7 +391,7 @@ static FloraOdds mesaClayBall = {
 
 static FloraOdds mesaBone = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bone",
     },
     .level = 19,

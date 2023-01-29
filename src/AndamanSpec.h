@@ -143,7 +143,7 @@ static TerrainBaseDistribution andamanTerrainDistribution = {
 
 static FloraOdds andamanBananaTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bananaTree"
     },
     .level = 17,
@@ -169,7 +169,7 @@ static FloraOdds andamanBananaTree = {
 
 static FloraOdds andamanCoconutTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "coconutTree"
     },
     .level = 17,
@@ -195,7 +195,7 @@ static FloraOdds andamanCoconutTree = {
 
 static FloraOdds andamanAspen = {
     .indexCount= 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "aspen1",
         "aspen2",
         "aspen3"
@@ -223,7 +223,7 @@ static FloraOdds andamanAspen = {
 
 static FloraOdds andamanRockObject = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "rock",
         "rockSmall",
         "rockLarge",
@@ -251,7 +251,7 @@ static FloraOdds andamanRockObject = {
 
 static FloraOdds andamanGreenRockObject = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "greenRock",
         "greenRockSmall",
         "greenRockLarge",

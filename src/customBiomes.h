@@ -6,6 +6,7 @@
 #include "SPRand.h"
 #include "utils.h"
 
+
 enum BiomeType {
     Unset,
     Fjords,
@@ -16,9 +17,10 @@ enum BiomeType {
     Hillsides,
     MonumentValley,
     Andaman,
+    Alps,
 };
 
-#define BIOME_TYPE_COUNT 9
+#define BIOME_TYPE_COUNT 10
 
 enum Size { XS, S, M, L, XL };
 
@@ -71,8 +73,6 @@ typedef struct TerrainBaseDistribution {
 
 struct FloraOdds;
 typedef struct FloraOdds {
-    int indexCount;
-    char** floraIndices;
 
     int level;
 
@@ -95,6 +95,8 @@ typedef struct FloraOdds {
     double maxRiverDistance;
 
 
+    int indexCount;
+    char* floraIndices[];
 } FloraOdds;
 
 
@@ -213,6 +215,7 @@ static char* grassVariations[GRASS_VARIATIONS_COUNT] = {
 #include "DesertOasisSpec.h"
 #include "HillsidesSpec.h"
 #include "AndamanSpec.h"
+#include "AlpsSpec.h"
 
 #define MATRIX_ROWS 4
 // static Biome** biomeMatrix[MATRIX_ROWS] = {

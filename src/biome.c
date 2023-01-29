@@ -327,8 +327,12 @@ SPSurfaceTypeResult spBiomeGetSurfaceTypeForPoint(
 			}
 		}
 
+		if(variation == terrainVariation_snow || variation == terrainVariation_grassSnow) {
+			hasSnow = true;
+		}
+
 		bool isSnowVariation = false;
-		if(!snowRemoved && hasSnow && (strcmp(variationIndex, "snow") == 0 || strcmp(variationIndex, "grassSnow") == 0)) {
+		if(!snowRemoved && hasSnow) {
 			isSnowVariation = true;
 		}
 
@@ -534,8 +538,10 @@ void spBiomeGetTagsForPoint(
 	if(biome.biome->type != Unset) {
 		int tagCount = *tagCountOut;
 
-		tagsOut[0] = threadState->getBiomeTag(threadState, biome.biome->tag);
+		tagsOut[tagCount++] = threadState->getBiomeTag(threadState, biome.biome->tag);
 
-		*tagCountOut = 1;
+		*tagCountOut = tagCount;
 	}
+
+	free(biomeBlendArray);
 }

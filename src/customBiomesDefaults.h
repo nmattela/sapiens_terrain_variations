@@ -357,7 +357,7 @@ static TerrainBaseDistribution defaultTerrainDistribution = {
 
 static FloraOdds defaultPineBig = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "pineBig1"
     },
     .level = 15,
@@ -383,7 +383,7 @@ static FloraOdds defaultPineBig = {
 
 static FloraOdds defaultAspenBig = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "aspenBig1"
     },
     .level = 15,
@@ -409,7 +409,7 @@ static FloraOdds defaultAspenBig = {
 
 static FloraOdds defaultWillow = {
     .indexCount = 2,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "willow1",
         "willow2"
     },
@@ -436,7 +436,7 @@ static FloraOdds defaultWillow = {
 
 static FloraOdds defaultRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "rock",
         "rockSmall",
         "rockLarge",
@@ -464,7 +464,7 @@ static FloraOdds defaultRock = {
 
 static FloraOdds defaultRedRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "redRock",
         "redRockSmall",
         "redRockLarge",
@@ -492,7 +492,7 @@ static FloraOdds defaultRedRock = {
 
 static FloraOdds defaultGreenRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "greenRock",
         "greenRockSmall",
         "greenRockLarge",
@@ -520,7 +520,7 @@ static FloraOdds defaultGreenRock = {
 
 static FloraOdds defaultLimestoneRock = {
     .indexCount = 3,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "limestoneRock",
         "limestoneRockSmall",
         "limestoneRockLarge",
@@ -548,7 +548,7 @@ static FloraOdds defaultLimestoneRock = {
 
 static FloraOdds defaultFlint = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "flint",
     },
     .level = 18,
@@ -574,7 +574,7 @@ static FloraOdds defaultFlint = {
 
 static FloraOdds defaultClay = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "clay",
     },
     .level = 18,
@@ -600,7 +600,7 @@ static FloraOdds defaultClay = {
 
 static FloraOdds defaultBirchBranch = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "birchBranch",
     },
     .level = 20,
@@ -626,7 +626,7 @@ static FloraOdds defaultBirchBranch = {
 
 static FloraOdds defaultPineBranch = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "pineBranch",
     },
     .level = 20,
@@ -652,7 +652,7 @@ static FloraOdds defaultPineBranch = {
 
 static FloraOdds defaultWillowBranch = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "willowBranch"
     },
     .level = 20,
@@ -678,7 +678,7 @@ static FloraOdds defaultWillowBranch = {
 
 static FloraOdds defaultBambooBranch = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bambooBranch",
     },
     .level = 20,
@@ -704,7 +704,7 @@ static FloraOdds defaultBambooBranch = {
 
 static FloraOdds defaultDeadAlpaca = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "deadAlpaca",
     },
     .level = 19,
@@ -730,7 +730,7 @@ static FloraOdds defaultDeadAlpaca = {
 
 static FloraOdds defaultDeadMammoth = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "deadMammoth",
     },
     .level = 19,
@@ -756,7 +756,7 @@ static FloraOdds defaultDeadMammoth = {
 
 static FloraOdds defaultBone = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bone",
     },
     .level = 19,
@@ -782,7 +782,7 @@ static FloraOdds defaultBone = {
 
 static FloraOdds defaultRaspberryBush = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "raspberryBush",
     },
     .level = 19,
@@ -808,7 +808,7 @@ static FloraOdds defaultRaspberryBush = {
 
 static FloraOdds defaultGooseberryBush = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "gooseberryBush",
     },
     .level = 19,
@@ -834,7 +834,7 @@ static FloraOdds defaultGooseberryBush = {
 
 static FloraOdds defaultAppleTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "appleTree",
     },
     .level = 18,
@@ -860,7 +860,7 @@ static FloraOdds defaultAppleTree = {
 
 static FloraOdds defaultOrangeTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "orangeTree",
     },
     .level = 18,
@@ -886,7 +886,7 @@ static FloraOdds defaultOrangeTree = {
 
 static FloraOdds defaultPeachTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "peachTree",
     },
     .level = 18,
@@ -912,7 +912,7 @@ static FloraOdds defaultPeachTree = {
 
 static FloraOdds defaultBananaTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "bananaTree",
     },
     .level = 18,
@@ -938,7 +938,7 @@ static FloraOdds defaultBananaTree = {
 
 static FloraOdds defaultCoconutTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "coconutTree",
     },
     .level = 18,
@@ -964,7 +964,7 @@ static FloraOdds defaultCoconutTree = {
 
 static FloraOdds defaultElderBerryTree = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "elderberryTree",
     },
     .level = 18,
@@ -990,7 +990,7 @@ static FloraOdds defaultElderBerryTree = {
 
 static FloraOdds defaultBeetrootPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "beetrootPlant",
     },
     .level = 19,
@@ -1016,7 +1016,7 @@ static FloraOdds defaultBeetrootPlant = {
 
 static FloraOdds defaultPumpkinPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "pumpkinPlant",
     },
     .level = 19,
@@ -1042,7 +1042,7 @@ static FloraOdds defaultPumpkinPlant = {
 
 static FloraOdds defaultWheatPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "wheatPlant",
     },
     .level = 19,
@@ -1068,7 +1068,7 @@ static FloraOdds defaultWheatPlant = {
 
 static FloraOdds defaultFlaxPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "flaxPlant",
     },
     .level = 19,
@@ -1094,7 +1094,7 @@ static FloraOdds defaultFlaxPlant = {
 
 static FloraOdds defaultPoppyPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "poppyPlant",
     },
     .level = 19,
@@ -1120,7 +1120,7 @@ static FloraOdds defaultPoppyPlant = {
 
 static FloraOdds defaultGarlicPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "garlicPlant",
     },
     .level = 19,
@@ -1146,7 +1146,7 @@ static FloraOdds defaultGarlicPlant = {
 
 static FloraOdds defaultAloePlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "aloePlant",
     },
     .level = 19,
@@ -1172,7 +1172,7 @@ static FloraOdds defaultAloePlant = {
 
 static FloraOdds defaultEchinaceaPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "echinaceaPlant",
     },
     .level = 19,
@@ -1198,7 +1198,7 @@ static FloraOdds defaultEchinaceaPlant = {
 
 static FloraOdds defaultMarigoldPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "marigoldPlant",
     },
     .level = 19,
@@ -1224,7 +1224,7 @@ static FloraOdds defaultMarigoldPlant = {
 
 static FloraOdds defaultGingerPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "gingerPlant",
     },
     .level = 19,
@@ -1250,7 +1250,7 @@ static FloraOdds defaultGingerPlant = {
 
 static FloraOdds defaultTurmericPlant = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "turmericPlant",
     },
     .level = 19,

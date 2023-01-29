@@ -176,7 +176,7 @@ static TerrainBaseDistribution swampTerrainDistribution = {
 
 static FloraOdds swampWillow = {
     .indexCount = 2,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "willow1",
         "willow2"
     },
@@ -203,7 +203,7 @@ static FloraOdds swampWillow = {
 
 static FloraOdds swampWillowBranch = {
     .indexCount = 1,
-    .floraIndices = (char*[]){
+    .floraIndices = {
         "willowBranch"
     },
     .level = 20,
